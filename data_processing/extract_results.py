@@ -5,6 +5,8 @@ import sys
 from unidecode import unidecode
 
 kMOVEMENT = re.compile("Movement results")
+#kJUNK = re.compile("\\\\nDiscarding junk: \\[[^\\]]*\\]\\\\n")
+kJUNK = re.compile("\\\\nDiscarding junk: \\[[^\\]]*\\]\\\\n")
 
 def extract_orders(body):
   yield body
