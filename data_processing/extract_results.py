@@ -3,6 +3,7 @@ import re
 import sqlite3
 import sys
 from unidecode import unidecode
+import csv
 
 kMOVEMENT = re.compile("Movement results")
 kCOUNTRIES = ["England", "Austria", "Germany", "France", "Russia", "Italy", "Turkey"]
@@ -104,10 +105,16 @@ def movement_tuples(message, row):
 if __name__ == "__main__":
     conn = sqlite3.connect(sys.argv[1])
 
-    for mm in movement_results_bodies(conn):
-        base_row = {}
-        base_row["game"] = mm["game"]
-        base_row["time"] = mm["time"]
-        base_row["subject"] = mm["subject"]
-        for rr in movement_tuples(mm["text"], base_row):
-            print(rr)
+    with open("movements.csv", 'w') as outfile:
+        out = csv.DictWriter(outfile, ["game", "time", "subject", "unit_type",
+                                       "start_location", "end_location", "support_country",
+                                       "order_type", "country", "result",
+                                       "support_type", "support_start", "support_end"])
+        out.writeheader()
+        for mm in movement_results_bodies(conn):
+            base_row = {}
+            base_row["game"] = mm["game"]
+            base_row["time"] = mm["time"]
+            base_row["subject"] = mm["subject"]
+            for rr in movement_tuples(mm["text"], base_row):
+                out.writerow(rr)
