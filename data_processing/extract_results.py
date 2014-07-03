@@ -1,16 +1,18 @@
-
 import re
 import sqlite3
 import sys
-from unidecode import unidecode
+# from unidecode import unidecode  # pyflakes reports unused
 import csv
+
 
 kMOVEMENT = re.compile("Movement results")
 kCOUNTRIES = ["England", "Austria", "Germany", "France", "Russia", "Italy", "Turkey"]
 kADJECTIVES = ["English", "Austrian", "German", "French", "Russian", "Italian", "Turkish"]
 
+
 def extract_orders(body):
   yield body
+
 
 def movement_results_bodies(conn):
     c = conn.cursor()
@@ -23,6 +25,7 @@ def movement_results_bodies(conn):
       current_country = None
       for ii in extract_orders(orders):
         yield {"game": gg, "text": ii, "subject": ss, "time": tt}
+
 
 def parse_move(order, assumed_country):
     order = order.strip()
@@ -52,6 +55,7 @@ def parse_move(order, assumed_country):
         stop = start
 
     return country, unit_type, start, stop
+
 
 def movement_tuples(message, row):
     for line in message.split("\\n"):
@@ -102,14 +106,16 @@ def movement_tuples(message, row):
                 continue
             yield row
 
+
 if __name__ == "__main__":
     conn = sqlite3.connect(sys.argv[1])
 
     with open("movements.csv", 'w') as outfile:
         out = csv.DictWriter(outfile, ["game", "time", "subject", "unit_type",
-                                       "start_location", "end_location", "support_country",
-                                       "order_type", "country", "result",
-                                       "support_type", "support_start", "support_end"])
+                                       "start_location", "end_location",
+                                       "support_country", "order_type",
+                                       "country", "result", "support_type",
+                                       "support_start", "support_end"])
         out.writeheader()
         for mm in movement_results_bodies(conn):
             base_row = {}
