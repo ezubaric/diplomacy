@@ -3,6 +3,7 @@ import sqlite3
 import sys
 # from unidecode import unidecode  # pyflakes reports unused
 import csv
+from dateutil import parser
 
 
 kMOVEMENT = re.compile("Movement results")
@@ -117,10 +118,17 @@ if __name__ == "__main__":
                                        "country", "result", "support_type",
                                        "support_start", "support_end"])
         out.writeheader()
-        for mm in movement_results_bodies(conn):
+        moves = movement_results_bodies(conn)
+        moves = sorted(moves, key=lambda x: (x["game"],
+            parser.parse(x["time"])))
+        for mm in moves:
             base_row = {}
             base_row["game"] = mm["game"]
             base_row["time"] = mm["time"]
             base_row["subject"] = mm["subject"]
-            for rr in movement_tuples(mm["text"], base_row):
-                out.writerow(rr)
+            try:
+                for rr in movement_tuples(mm["text"], base_row):
+                    out.writerow(rr)
+            except AssertionError as e:
+                print(e)
+                continue
