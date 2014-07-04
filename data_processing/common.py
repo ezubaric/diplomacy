@@ -38,10 +38,13 @@ def game_params(game):
         if msg is None:
             continue
         idx = msg.find("has changed the parameters for game")
-        if idx >= 0:
+        if idx == -1:
+            idx = msg.find("\nThe parameters for")
+        year = re.search(r"\b([SF]\d\d\d\d\w\w?)\b", subj)
+        if idx >= 0 and year:
             idx_from = msg[idx:].find("\n")
             idx_to = msg[idx:].find("\n\n")
-            params.append(msg[idx + idx_from + 1:idx + idx_to])
+            params.append((year.groups()[0], msg[idx + idx_from + 1:idx + idx_to]))
     return params
 
 
@@ -61,8 +64,19 @@ def presses(game):
     """Returns a list of all presses (p2p messages) in a game."""
     presses = []
     for date, subj, msg, _ in game:
-        m = re.search("Press from (.) to (.)", subj)
+        m = re.search("Press from (.) to (.*)", subj)
         if m and msg.startswith("Message from"):
             fro, to = m.groups()
             presses.append((fro, to, subj, msg))
     return presses
+
+
+def broadcasts(game):
+    """Returns a list of all broadcasted messages in a game."""
+    broadcasts = []
+    for date, subj, msg, _ in game:
+        m = re.search("Broadcast from (.)", subj)
+        if m and msg.startswith("Broadcast message from"):
+            fro, = m.groups()
+            broadcasts.append((fro, subj, msg))
+    return broadcasts
