@@ -71,6 +71,17 @@ def presses(game):
     return presses
 
 
+def grey_presses(game):
+    """Returns a list of all grey (anonymous) presses (p2p messages) in a game."""
+    presses = []
+    for date, subj, msg, _ in game:
+        m = re.search("Press to (.*)", subj)
+        if m and msg.startswith("Message to"):
+            to, = m.groups()
+            presses.append((to, subj, msg))
+    return presses
+
+
 def broadcasts(game):
     """Returns a list of all broadcasted messages in a game."""
     broadcasts = []
