@@ -4,12 +4,9 @@ import sys
 # from unidecode import unidecode  # pyflakes reports unused
 import csv
 from dateutil import parser
-
+from data_processing.common import kCOUNTRIES, kADJECTIVES, kGOODVARS, game_to_variant
 
 kMOVEMENT = re.compile("Movement results")
-kCOUNTRIES = ["England", "Austria", "Germany", "France", "Russia", "Italy", "Turkey"]
-kADJECTIVES = ["English", "Austrian", "German", "French", "Russian", "Italian", "Turkish"]
-
 
 def extract_orders(body):
   yield body
@@ -44,7 +41,7 @@ def parse_move(order, assumed_country):
         locations = order.split(" -> ")
         # Need to handle arbitrary number of locations because of convoys
         start = locations[0]
-        stop = locations[-1]
+        stop = locations[-1].replace(".", "")
     else:
         if order.startswith("Army") or order.startswith("Fleet"):
             unit_type, order = order.split(" ", 1)
@@ -60,7 +57,7 @@ def parse_move(order, assumed_country):
 
 def movement_tuples(message, row):
     for line in message.split("\\n"):
-        print("Processing: %s" % line)
+        # print("Processing: %s" % line)
         if line.strip().startswith("Ownership of supply centers:"):
             break
         if "build pending" in line:
@@ -74,7 +71,7 @@ def movement_tuples(message, row):
 
             if "(*" in order:
                 order, result = order.split("(*")
-                row["result"] = result
+                row["result"] = result.replace("*)", "")
             else:
                 row["result"] = ""
 
@@ -111,6 +108,9 @@ def movement_tuples(message, row):
 if __name__ == "__main__":
     conn = sqlite3.connect(sys.argv[1])
 
+    variants = game_to_variant(conn)
+    print(variants)
+
     with open("movements.csv", 'w') as outfile:
         out = csv.DictWriter(outfile, ["game", "time", "subject", "unit_type",
                                        "start_location", "end_location",
@@ -122,6 +122,10 @@ if __name__ == "__main__":
         moves = sorted(moves, key=lambda x: (x["game"],
             parser.parse(x["time"])))
         for mm in moves:
+            variant = variants[mm["game"]]
+            if not variant in kGOODVARS:
+                continue
+            print("VAR: %s" % variants[mm["game"]])
             base_row = {}
             base_row["game"] = mm["game"]
             base_row["time"] = mm["time"]
@@ -132,3 +136,5 @@ if __name__ == "__main__":
             except AssertionError as e:
                 print(e)
                 continue
+
+    print(set(variants.values()))

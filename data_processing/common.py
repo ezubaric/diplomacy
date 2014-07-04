@@ -1,10 +1,33 @@
 import re
 from dateutil import parser
+import operator
+from collections import defaultdict
+
+kCOUNTRIES = ["England", "Austria", "Germany", "France", "Russia", "Italy", "Turkey"]
+kADJECTIVES = ["English", "Austrian", "German", "French", "Russian", "Italian", "Turkish"]
+kVARIANT = re.compile("Variant: [a-zA-Z0-9 ]*")
+kGOODVARS = ["Standard", "Standard Gunboat"]
 
 def all_gamenames(cursor):
     """Returns a list of all distinct game names"""
     for name, in cursor.execute( 'SELECT DISTINCT gamename FROM messages'):
         yield name
+
+def game_to_variant(cursor):
+    """
+    Returns mapping from game to variant type
+    """
+    counts = defaultdict(dict)
+
+    for gg, mm in cursor.execute('select gamename, body from messages where body like "%Variant:%"'):
+        for ii in [x.replace("Variant:", "").strip() for x in kVARIANT.findall(mm)]:
+            counts[gg][ii] = counts[gg].get(ii, 0) + 1
+
+    mapping = {}
+    for ii in counts:
+        mapping[ii] = max(counts[ii].iteritems(), key=operator.itemgetter(1))[0]
+
+    return mapping
 
 
 def game_from_db(cursor, game_name=None):
