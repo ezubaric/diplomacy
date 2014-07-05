@@ -4,6 +4,7 @@ import sys
 # from unidecode import unidecode  # pyflakes reports unused
 import csv
 from dateutil import parser
+import data_processing
 from data_processing.common import kCOUNTRIES, kADJECTIVES, kGOODVARS, game_to_variant
 
 kMOVEMENT = re.compile("Movement results")
@@ -76,7 +77,7 @@ def movement_tuples(message, row):
                 row["result"] = ""
 
             if "SUPPORT" in order:
-                row["order_type"] = "SUPPORT"
+                row["order_type"] = "support"
                 unit, order = order.split("SUPPORT", 1)
                 unit = unit.strip()
 
@@ -92,6 +93,10 @@ def movement_tuples(message, row):
                 row["support_start"] = sup_start
                 row["support_end"] = sup_end
             elif "->" or "HOLD" in order:
+                if "->" in order:
+                    row["order_type"] = "move"
+                else:
+                    row["order_type"] = "hold"
                 move_country, unit_type, start, end = parse_move(order, country)
                 row["unit_type"] = unit_type
                 row["start_location"] = start
