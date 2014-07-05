@@ -19,6 +19,8 @@ Bohemia,Land,boh,580,580
 Brest,Home supply center (France),bre,276,553
 Budapest,Home supply center (Austria-Hungary),bud,661,640
 Bulgaria,Supply center,bul,740,762
+Bulgaria (east coast),Supply center,bul,809,739
+Bulgaria (south coast),Supply center,bul,773,800
 Burgundy,Land,bur,411,618
 Clyde,Land,cly,311,311
 Constantinople,Home supply center (Turkey),con,812,776
@@ -57,6 +59,7 @@ Ruhr,Land,ruh,465,545
 Rumania,Supply center,rum,798,706
 Serbia,Supply center,ser,678,716
 Sevastopol,Home supply center (Russia),sev,923,781
+Odessa,Home supply center (Russia),sev,923,781
 Silesia,Land,sil,608,525
 Skagerrak,Water,ska,536,347
 Smyrna,Home supply center (Turkey),smy,822,865
@@ -64,6 +67,8 @@ Spain,Supply center,spa,225,853
 Spain (south coast),Supply center,spa,259,808
 Spain (north coast),Supply center,spa,245,694
 St Petersburg,Home supply center (Russia),stp,809,300
+St Petersburg (north coast),Home supply center (Russia),stp,849,200
+St Petersburg (south coast),Home supply center (Russia),stp,761,331
 Sweden,Supply center,swe,605,364
 Syria,Land,syr,1078,1007
 Trieste,Home supply center (Austria-Hungary),tri,588,778
