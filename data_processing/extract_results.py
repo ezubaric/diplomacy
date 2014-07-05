@@ -111,6 +111,7 @@ def movement_tuples(message, row):
 
 
 if __name__ == "__main__":
+    print("Looking for database in %s" % sys.argv[1])
     conn = sqlite3.connect(sys.argv[1])
 
     variants = game_to_variant(conn)
