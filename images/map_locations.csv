@@ -5,3 +5,81 @@ London,Home supply center (England),lon,355,490
 Wales,Land,wal,318,455
 Adriatic Sea,Water,adr,589,750
 Liverpool,Home supply center (England),lvp,336,430
+
+
+
+Aegean Sea,Water,aeg aegean
+Albania,Land,alb
+Ankara,Home supply center (Turkey),ank
+Apulia,Land,apu
+Armenia,Land,arm
+Baltic Sea,Water,bal baltic
+Barents Sea,Water,bar barents
+Belgium,Supply center,bel
+Berlin,Home supply center (Germany),ber
+Black Sea,Water,bla black
+Bohemia,Land,boh
+Brest,Home supply center (France),bre
+Budapest,Home supply center (Austria-Hungary),bud
+Bulgaria,Supply center,bul
+Burgundy,Land,bur
+Clyde,Land,cly
+Constantinople,Home supply center (Turkey),con
+Denmark,Supply center,den
+Eastern Mediterranean,Water,eas emed east eastern eastmed ems eme
+
+English Channel,Water,eng english channel ech
+Finland,Land,fin
+Galicia,Land,gal
+Gascony,Land,gas
+Greece,Supply center,gre
+Gulf of Lyon,Water,lyo gol gulfofl lyon
+Gulf of Bothnia,Water,bot gob both gulfofb bothnia
+Helgoland Bight,Water,hel helgoland
+Holland,Supply center,hol
+Ionian Sea,Water,ion ionian
+Ireland (impassable),Land,ire
+Irish Sea,Water,iri irish
+Kiel,Home supply center (Germany),kie
+
+Livonia,Land,lvn livo lvo lva
+
+Marseilles,Home supply center (France),mar mars
+Mid-Atlantic Ocean,Water,mao midatlanticocean midatlantic mid mat
+Moscow,Home supply center (Russia),mos
+Munich,Home supply center (Germany),mun
+Naples,Home supply center (Italy),nap napoli
+North Atlantic Ocean,Water,nao nat
+North Africa,Land,naf nora
+North Sea,Water,nth norsea nts
+Norway,Supply center,nor nwy norw
+Norwegian Sea,Water,nwg norwsea nrg norwegian
+Paris,Home supply center (France),par
+Picardy,Land,pic
+Piedmont,Land,pie piemonte
+Portugal,Supply center,por
+Prussia,Land,pru
+Rome,Home supply center (Italy),rom roma
+Ruhr,Land,ruh
+Rumania,Supply center,rum
+Serbia,Supply center,ser
+Sevastopol,Home supply center (Russia),sev sevastapol
+Silesia,Land,sil
+Skagerrak,Water,ska
+Smyrna,Home supply center (Turkey),smy
+Spain,Supply center,spa
+St Petersburg,Home supply center (Russia),stp
+Sweden,Supply center,swe
+Switzerland (impassable),Land,swi switz
+Syria,Land,syr
+Trieste,Home supply center (Austria-Hungary),tri
+Tunis,Supply center,tun tunisia
+Tuscany,Land,tus
+Tyrolia,Land,tyr tyl trl
+Tyrrhenian Sea,Water,tys tyrr tyrrhenian tyn tyh
+Ukraine,Land,ukr
+Venice,Home supply center (Italy),ven venizia
+Vienna,Home supply center (Austria-Hungary),vie
+
+Warsaw,Home supply center (Russia),war
+Western Mediterranean,Water,wes wmed west western westmed wms wme
