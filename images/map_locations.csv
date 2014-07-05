@@ -5,81 +5,72 @@ London,Home supply center (England),lon,355,490
 Wales,Land,wal,318,455
 Adriatic Sea,Water,adr,589,750
 Liverpool,Home supply center (England),lvp,336,430
-
-
-
-Aegean Sea,Water,aeg aegean
-Albania,Land,alb
-Ankara,Home supply center (Turkey),ank
-Apulia,Land,apu
-Armenia,Land,arm
-Baltic Sea,Water,bal baltic
-Barents Sea,Water,bar barents
-Belgium,Supply center,bel
-Berlin,Home supply center (Germany),ber
-Black Sea,Water,bla black
-Bohemia,Land,boh
-Brest,Home supply center (France),bre
-Budapest,Home supply center (Austria-Hungary),bud
-Bulgaria,Supply center,bul
-Burgundy,Land,bur
-Clyde,Land,cly
-Constantinople,Home supply center (Turkey),con
-Denmark,Supply center,den
-Eastern Mediterranean,Water,eas emed east eastern eastmed ems eme
-
-English Channel,Water,eng english channel ech
-Finland,Land,fin
-Galicia,Land,gal
-Gascony,Land,gas
-Greece,Supply center,gre
-Gulf of Lyon,Water,lyo gol gulfofl lyon
-Gulf of Bothnia,Water,bot gob both gulfofb bothnia
-Helgoland Bight,Water,hel helgoland
-Holland,Supply center,hol
-Ionian Sea,Water,ion ionian
-Ireland (impassable),Land,ire
-Irish Sea,Water,iri irish
-Kiel,Home supply center (Germany),kie
-
-Livonia,Land,lvn livo lvo lva
-
-Marseilles,Home supply center (France),mar mars
-Mid-Atlantic Ocean,Water,mao midatlanticocean midatlantic mid mat
-Moscow,Home supply center (Russia),mos
-Munich,Home supply center (Germany),mun
-Naples,Home supply center (Italy),nap napoli
-North Atlantic Ocean,Water,nao nat
-North Africa,Land,naf nora
-North Sea,Water,nth norsea nts
-Norway,Supply center,nor nwy norw
-Norwegian Sea,Water,nwg norwsea nrg norwegian
-Paris,Home supply center (France),par
-Picardy,Land,pic
-Piedmont,Land,pie piemonte
-Portugal,Supply center,por
-Prussia,Land,pru
-Rome,Home supply center (Italy),rom roma
-Ruhr,Land,ruh
-Rumania,Supply center,rum
-Serbia,Supply center,ser
-Sevastopol,Home supply center (Russia),sev sevastapol
-Silesia,Land,sil
-Skagerrak,Water,ska
-Smyrna,Home supply center (Turkey),smy
-Spain,Supply center,spa
-St Petersburg,Home supply center (Russia),stp
-Sweden,Supply center,swe
-Switzerland (impassable),Land,swi switz
-Syria,Land,syr
-Trieste,Home supply center (Austria-Hungary),tri
-Tunis,Supply center,tun tunisia
-Tuscany,Land,tus
-Tyrolia,Land,tyr tyl trl
-Tyrrhenian Sea,Water,tys tyrr tyrrhenian tyn tyh
-Ukraine,Land,ukr
-Venice,Home supply center (Italy),ven venizia
-Vienna,Home supply center (Austria-Hungary),vie
-
-Warsaw,Home supply center (Russia),war
-Western Mediterranean,Water,wes wmed west western westmed wms wme
+Aegean Sea,Water,aeg,778,876
+Albania,Land,alb,675,805
+Ankara,Home supply center (Turkey),ank,932,904
+Apulia,Land,apu,599,817
+Armenia,Land,arm,1074,770
+Baltic Sea,Water,bal baltic,634,417
+Barents Sea,Water,bar barents,774,20
+Belgium,Supply center,bel,420,538
+Berlin,Home supply center (Germany),ber,563,602
+Black Sea,Water,bla black,869,740
+Bohemia,Land,boh,580,580
+Brest,Home supply center (France),bre,276,553
+Budapest,Home supply center (Austria-Hungary),bud,661,640
+Bulgaria,Supply center,bul,740,762
+Burgundy,Land,bur,411,618
+Clyde,Land,cly,311,311
+Constantinople,Home supply center (Turkey),con,812,776
+Denmark,Supply center,den,549,422
+Eastern Mediterranean,Water,eas,880,936
+English Channel,Water,eng,306,517
+Finland,Land,fin,742,248
+Galicia,Land,gal,721,590
+Gascony,Land,gas,320,660
+Greece,Supply center,gre,737,873
+Gulf of Lyon,Water,lyo,392,756
+Gulf of Bothnia,Water,bot,671,403
+Helgoland Bight,Water,hel,464,436
+Holland,Supply center,hol,438,493
+Ionian Sea,Water,ion,623,920
+Irish Sea,Water,iri,241,466
+Kiel,Home supply center (Germany),kie,526,476
+Livonia,Land,lvn,740,424
+Marseilles,Home supply center (France),mar,403,707
+Mid-Atlantic Ocean,Water,mao,80,592
+Moscow,Home supply center (Russia),mos,922,401
+Munich,Home supply center (Germany),mun,525,604
+Naples,Home supply center (Italy),nap,572,805
+North Atlantic Ocean,Water,nao,120,214
+North Africa,Land,naf,152,921
+North Sea,Water,nth,449,378
+Norway,Supply center,nor,551,300
+Norwegian Sea,Water,nwg,466,139
+Paris,Home supply center (France),par,372,567
+Picardy,Land,pic,376,537
+Piedmont,Land,pie,465,682
+Portugal,Supply center,por,110,751
+Prussia,Land,pru,627,478
+Rome,Home supply center (Italy),rom,533,774
+Ruhr,Land,ruh,465,545
+Rumania,Supply center,rum,798,706
+Serbia,Supply center,ser,678,716
+Sevastopol,Home supply center (Russia),sev,923,781
+Silesia,Land,sil,608,525
+Skagerrak,Water,ska,536,347
+Smyrna,Home supply center (Turkey),smy,822,865
+Spain,Supply center,spa,225,853
+St Petersburg,Home supply center (Russia),stp,809,300
+Sweden,Supply center,swe,605,364
+Syria,Land,syr,1078,1007
+Trieste,Home supply center (Austria-Hungary),tri,588,778
+Tunis,Supply center,tun,459,910
+Tuscany,Land,tus,511,727
+Tyrolia,Land,tyr,550,639
+Tyrrhenian Sea,Water,tys,511,839
+Ukraine,Land,ukr,825,558
+Venice,Home supply center (Italy),ven,540,671
+Vienna,Home supply center (Austria-Hungary),vie,601,620
+Warsaw,Home supply center (Russia),war,685,519
+Western Mediterranean,Water,wes,326,852
