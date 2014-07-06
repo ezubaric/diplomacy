@@ -131,6 +131,7 @@ def generate_all_game_presses(cursor, game_name):
     for subject, body, sent in messages:
         if subject.count("Error Flag") > 0:
             continue # just a bounce message
+        
         if subject.count("Press from ") > 0:
             if not body:
                 body = ""
@@ -139,8 +140,8 @@ def generate_all_game_presses(cursor, game_name):
             except UnicodeEncodeError:
                 body = body.encode("ISO-8859-1").decode("unicode-escape")
         
-            sender = subject.lower().split("press from ")[1].split(" ")[0].upper()
-            receivers = subject.lower().split("to ")[1].upper()
+            sender = subject.lower().split("press from ")[1].split(" ")[0].upper() # lowercased to capture some cases
+            receivers = subject.lower().split("to ")[1].upper() # lowercased to capture some cases
 
             if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
                 # receiver and sender are exchanged if the message is a reply or receipt notice
@@ -149,9 +150,11 @@ def generate_all_game_presses(cursor, game_name):
                 receivers = temp
         
             try:
-                milestone = body.split("Deadline: ")[1].split(" ")[0]
+                # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
+                milestone = body.split("Deadline: ")[1].split(" ")[0] 
             except IndexError:
                 try:
+                    # Get from subject
                     milestone = subject.split("- ")[1].split(" ")[0]
                 except:
                     continue # not actually a press message; invalid credential message
@@ -159,10 +162,11 @@ def generate_all_game_presses(cursor, game_name):
             body = body.replace("\n"," ").replace(","," ")
             msg = body.split("End of message.")[0]
             try:
-                msg = msg.split("in \'" + game_name+ "\':")[1]
+                msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue # not actually a press message; game state message
             yield sender, receivers, milestone, sent, msg
+
         elif subject.count("Broadcast") > 0:
             if not body:
                 body = ""
@@ -174,26 +178,28 @@ def generate_all_game_presses(cursor, game_name):
             body = body.replace("\n"," ").replace(","," ")
             msg = body.split("End of message.")[0]
             
-            sender = msg.split(" in \'" + game_name + "\':")[0].split(' ')
+            sender = msg.split(" in \'" + game_name + "\':")[0].split(' ') # Sender name in broadcast is many times in body, many times in subject
             if sender[-2] == "as":
-                sender = sender[-1][0]
+                sender = sender[-1][0] # sender name from body
             else:
-                if subject.count(" from ") > 0 and (subject.startswith('Re:') or subject.startswith('Rcpt:')):
+                if subject.count(" from ") > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
                     sender = subject.split(" from ")[1]
                 else:
                     sender = "unknown"
             receivers = "all"
 
             try:
-                milestone = body.split("Deadline: ")[1].split(" ")[0]
+                # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
+                milestone = body.split("Deadline: ")[1].split(" ")[0] 
             except IndexError:
                 try:
+                    # Get from subject
                     milestone = subject.split("- ")[1].split(" ")[0]
                 except:
                     continue # not actually a press message; invalid credential message
 
             try:
-                msg = msg.split("in \'" + game_name+ "\':")[1]
+                msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue
             yield sender, receivers, milestone, sent, msg
@@ -217,27 +223,28 @@ def generate_game_broadcast_presses(cursor, game_name):
         body = body.replace("\n"," ").replace(","," ")
         msg = body.split("End of message.")[0]
             
-        sender = msg.split(" in \'" + game_name + "\':")[0].split(' ')
+        sender = msg.split(" in \'" + game_name + "\':")[0].split(' ') # Sender name in broadcast is many times in body, many times in subject
         if sender[-2] == "as":
-            sender = sender[-1][0]
+            sender = sender[-1][0] # sender name from body
         else:
-            if subject.count(" from ") > 0 and (subject.startswith('Re:') or subject.startswith('Rcpt:')):
+            if subject.count(" from ") > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
                 sender = subject.split(" from ")[1]
             else:
                 sender = "unknown"
         receivers = "all"
 
         try:
-            milestone = body.split("Deadline: ")[1].split(" ")[0]
+            # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
+            milestone = body.split("Deadline: ")[1].split(" ")[0] 
         except IndexError:
             try:
+                # Get from subject
                 milestone = subject.split("- ")[1].split(" ")[0]
             except:
                 continue # not actually a press message; invalid credential message
 
         try:
-            msg = msg.split("in \'" + game_name+ "\':")[1]
+            msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
         except IndexError:
             continue
         yield sender, receivers, milestone, sent, msg
-
