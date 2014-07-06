@@ -121,13 +121,89 @@ def broadcasts(game):
             broadcasts.append((fro, subj, msg))
     return broadcasts
 
-def generate_game_presses(cursor, game_name):
-    """Returns a list of all presses in the given game.
+def generate_all_game_presses(cursor, game_name):
+    """Returns a list of all p2p presses in the given game.
     """
     messages = cursor.execute('SELECT subject, body, sent '
-                                  'FROM messages '
-                                  'WHERE gamename="'+ game_name + '" AND subject like "%Press from % to %" ORDER BY gamename, sent;').fetchall()
+                              'FROM messages '
+                              'WHERE gamename="'+ game_name + '" AND (subject like "%Press from % to %" OR subject like "%Broadcast%") ORDER BY gamename, sent;').fetchall()
     
+    for subject, body, sent in messages:
+        if subject.count("Error Flag") > 0:
+            continue # just a bounce message
+        if subject.count("Press from ") > 0:
+            if not body:
+                body = ""
+            try:
+                body = body.encode("utf8").decode("unicode-escape")
+            except UnicodeEncodeError:
+                body = body.encode("ISO-8859-1").decode("unicode-escape")
+        
+            sender = subject.lower().split("press from ")[1].split(" ")[0].upper()
+            receivers = subject.lower().split("to ")[1].upper()
+
+            if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
+                # receiver and sender are exchanged if the message is a reply or receipt notice
+                temp = sender
+                sender = receivers
+                receivers = temp
+        
+            try:
+                milestone = body.split("Deadline: ")[1].split(" ")[0]
+            except IndexError:
+                try:
+                    milestone = subject.split("- ")[1].split(" ")[0]
+                except:
+                    continue # not actually a press message; invalid credential message
+        
+            body = body.replace("\n"," ").replace(","," ")
+            msg = body.split("End of message.")[0]
+            try:
+                msg = msg.split("in \'" + game_name+ "\':")[1]
+            except IndexError:
+                continue # not actually a press message; game state message
+            yield sender, receivers, milestone, sent, msg
+        elif subject.count("Broadcast") > 0:
+            if not body:
+                body = ""
+            try:
+                body = body.encode("utf8").decode("unicode-escape")
+            except UnicodeEncodeError:
+                body = body.encode("ISO-8859-1").decode("unicode-escape")
+    
+            body = body.replace("\n"," ").replace(","," ")
+            msg = body.split("End of message.")[0]
+            
+            sender = msg.split(" in \'" + game_name + "\':")[0].split(' ')
+            if sender[-2] == "as":
+                sender = sender[-1][0]
+            else:
+                if subject.count(" from ") > 0 and (subject.startswith('Re:') or subject.startswith('Rcpt:')):
+                    sender = subject.split(" from ")[1]
+                else:
+                    sender = "unknown"
+            receivers = "all"
+
+            try:
+                milestone = body.split("Deadline: ")[1].split(" ")[0]
+            except IndexError:
+                try:
+                    milestone = subject.split("- ")[1].split(" ")[0]
+                except:
+                    continue # not actually a press message; invalid credential message
+
+            try:
+                msg = msg.split("in \'" + game_name+ "\':")[1]
+            except IndexError:
+                continue
+            yield sender, receivers, milestone, sent, msg
+
+def generate_game_broadcast_presses(cursor, game_name):
+    """Returns all broadcast messages in a game"""
+    messages = cursor.execute('SELECT subject, body, sent '
+                                  'FROM messages '
+                                  'WHERE gamename="'+ game_name + '" AND subject like "%Broadcast% to %" ORDER BY gamename, sent;').fetchall()
+
     for subject, body, sent in messages:
         if subject.count("Error Flag") > 0:
             continue # just a bounce message
@@ -137,15 +213,20 @@ def generate_game_presses(cursor, game_name):
             body = body.encode("utf8").decode("unicode-escape")
         except UnicodeEncodeError:
             body = body.encode("ISO-8859-1").decode("unicode-escape")
-        
-        sender = subject.lower().split("press from ")[1].split(" ")[0].upper()
-        receivers = subject.lower().split("to ")[1].upper()
+    
+        body = body.replace("\n"," ").replace(","," ")
+        msg = body.split("End of message.")[0]
+            
+        sender = msg.split(" in \'" + game_name + "\':")[0].split(' ')
+        if sender[-2] == "as":
+            sender = sender[-1][0]
+        else:
+            if subject.count(" from ") > 0 and (subject.startswith('Re:') or subject.startswith('Rcpt:')):
+                sender = subject.split(" from ")[1]
+            else:
+                sender = "unknown"
+        receivers = "all"
 
-        if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
-            temp = sender
-            sender = receivers
-            receivers = temp
-        
         try:
             milestone = body.split("Deadline: ")[1].split(" ")[0]
         except IndexError:
@@ -153,11 +234,10 @@ def generate_game_presses(cursor, game_name):
                 milestone = subject.split("- ")[1].split(" ")[0]
             except:
                 continue # not actually a press message; invalid credential message
-        
-        body = body.replace("\n"," ").replace(","," ")
-        msg = body.split("End of message.")[0]
+
         try:
             msg = msg.split("in \'" + game_name+ "\':")[1]
         except IndexError:
-            continue # not actually a press message; game state message
+            continue
         yield sender, receivers, milestone, sent, msg
+
