@@ -126,19 +126,23 @@ def generate_all_game_presses(cursor, game_name):
     """
     messages = cursor.execute('SELECT subject, body, sent '
                               'FROM messages '
-                              'WHERE gamename="'+ game_name + '" AND (subject like "%Press from % to %" OR subject like "%Broadcast%") ORDER BY gamename, sent;').fetchall()
+                              'WHERE gamename=? '
+                              'AND (subject like "%Press % to %" '
+                              'OR subject like "%Broadcast%") ORDER BY gamename, sent;').fetchall()
+
     
     for subject, body, sent in messages:
         if subject.count("Error Flag") > 0:
             continue # just a bounce message
         
+        if not body:
+            body = ""
+        try:
+            body = body.encode("ISO-8859-1").decode("unicode-escape")
+        except UnicodeEncodeError:
+            body = body.encode("utf8").decode("unicode-escape")
+
         if subject.count("Press from ") > 0:
-            if not body:
-                body = ""
-            try:
-                body = body.encode("utf8").decode("unicode-escape")
-            except UnicodeEncodeError:
-                body = body.encode("ISO-8859-1").decode("unicode-escape")
         
             sender = subject.lower().split("press from ")[1].split(" ")[0].upper() # lowercased to capture some cases
             receivers = subject.lower().split("to ")[1].upper() # lowercased to capture some cases
@@ -159,7 +163,7 @@ def generate_all_game_presses(cursor, game_name):
                 except:
                     continue # not actually a press message; invalid credential message
         
-            body = body.replace("\n"," ").replace(","," ")
+            # body = body.replace("\n"," ").replace(","," ")
             msg = body.split("End of message.")[0]
             try:
                 msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
@@ -168,14 +172,7 @@ def generate_all_game_presses(cursor, game_name):
             yield sender, receivers, milestone, sent, msg
 
         elif subject.count("Broadcast") > 0:
-            if not body:
-                body = ""
-            try:
-                body = body.encode("utf8").decode("unicode-escape")
-            except UnicodeEncodeError:
-                body = body.encode("ISO-8859-1").decode("unicode-escape")
-    
-            body = body.replace("\n"," ").replace(","," ")
+            # body = body.replace("\n"," ").replace(","," ")
             msg = body.split("End of message.")[0]
             
             sender = msg.split(" in \'" + game_name + "\':")[0].split(' ') # Sender name in broadcast is many times in body, many times in subject
