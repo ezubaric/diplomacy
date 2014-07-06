@@ -13,6 +13,12 @@ def all_gamenames(cursor):
     for name, in cursor.execute( 'SELECT DISTINCT gamename FROM messages'):
         yield name
 
+def all_gamenames_standard(cursor):
+    """Returns a list of all games that are of standard or standard gunboat
+    variant"""
+    for name, in cursor.execute("select distinct gamename from messages where body like \"%Variant: Standard%\";").fetchall():
+        yield name
+
 def game_to_variant(cursor):
     """
     Returns mapping from game to variant type
@@ -114,3 +120,45 @@ def broadcasts(game):
             fro, = m.groups()
             broadcasts.append((fro, subj, msg))
     return broadcasts
+
+def generate_game_presses(cursor, game_name):
+    """Returns a list of all presses in the given game.
+    """
+    messages = cursor.execute('SELECT subject, body, sent '
+                                  'FROM messages '
+                                  'WHERE gamename="'+ game_name + '" AND subject like "%Press from % to %" ORDER BY gamename, sent;').fetchall()
+    
+    for subject, body, sent in messages:
+        if subject.count("Error Flag") > 0:
+            continue # just a bounce message
+        if not body:
+            body = ""
+        try:
+            body = body.encode("utf8").decode("unicode-escape")
+        except UnicodeEncodeError:
+            body = body.encode("ISO-8859-1").decode("unicode-escape")
+        
+        #print game_name, subject, body
+        sender = subject.lower().split("press from ")[1].split(" ")[0]
+        receivers = subject.lower().split("to ")[1]
+
+        if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
+            temp = sender
+            sender = receivers
+            receivers = temp
+        
+        try:
+            milestone = body.split("Deadline: ")[1].split(" ")[0]
+        except IndexError:
+            try:
+                milestone = subject.split("- ")[1].split(" ")[0]
+            except:
+                continue # not actually a press message; invalid credential message
+        
+        body = body.replace("\n"," ").replace(","," ")
+        msg = body.split("End of message.")[0]
+        try:
+            msg = msg.split("in \'" + game_name+ "\':")[1]
+        except IndexError:
+            continue # not actually a press message; game state message
+        yield sender, receivers, milestone, sent, msg
