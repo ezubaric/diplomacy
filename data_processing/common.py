@@ -138,8 +138,8 @@ def generate_game_presses(cursor, game_name):
         except UnicodeEncodeError:
             body = body.encode("ISO-8859-1").decode("unicode-escape")
         
-        sender = subject.lower().split("press from ")[1].split(" ")[0]
-        receivers = subject.lower().split("to ")[1]
+        sender = subject.lower().split("press from ")[1].split(" ")[0].upper()
+        receivers = subject.lower().split("to ")[1].upper()
 
         if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
             temp = sender

@@ -3,6 +3,7 @@ import sys
 import csv
 import data_processing
 from data_processing.common import all_gamenames_standard, generate_game_presses
+#from common import all_gamenames_standard, generate_game_presses
 import codecs
 import os
 
