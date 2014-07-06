@@ -23,10 +23,9 @@ if __name__ == "__main__":
             game_messages = {}
             for sender, receivers, milestone, sent, msg in generate_all_game_presses(conn, game):
                 empty_game = False
-                '''[sender_prev, receivers_prev, milestone_prev, sent_prev] = game_messages.get(msg.strip(),["","","",""])
-                if sender_prev == "" or sender_prev.startswith("Re-"):'''
-                game_messages[msg.strip()] = [sender,receivers,milestone,sent]
-                #writer.writerow((sender, receivers, milestone, sent, msg))
+                [sender_prev, receivers_prev, milestone_prev, sent_prev] = game_messages.get(msg.strip(),["","","",""])
+                if sender_prev == "" or sender_prev.startswith("Re-"):
+                    game_messages[msg.strip()] = [sender,receivers,milestone,sent]
             for msg in game_messages:
                 metadata = game_messages[msg]
                 writer.writerow((metadata[0], metadata[1], metadata[2], metadata[3], msg))
