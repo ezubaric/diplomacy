@@ -127,7 +127,8 @@ def generate_all_game_presses(cursor, game_name):
     messages = cursor.execute('SELECT subject, body, sent '
                               'FROM messages '
                               'WHERE gamename=? '
-                              'AND (subject like "%Press% to %" '
+                              'AND (subject like "%Press from % to %" '
+                              'OR subject like "USAK:%Press to %" '
                               'OR subject like "%Broadcast%") '
                               'ORDER BY gamename, sent;',
                               (game_name,)).fetchall()
@@ -166,10 +167,12 @@ def generate_all_game_presses(cursor, game_name):
                 temp = sender
                 sender = receivers
                 receivers = temp
+                sender = "Re-"+sender
+                receivers = "Re-"+receivers
         
             msg = body.split("End of message.")[0]
             try:
-                msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
+                msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue # not actually a press message; game state message
             yield sender, receivers, milestone, sent, msg
@@ -184,10 +187,12 @@ def generate_all_game_presses(cursor, game_name):
                 temp = sender
                 sender = receivers
                 receivers = temp
+                sender = "Re-"+sender
+                receivers = "Re-"+receivers
         
             msg = body.split("End of message.")[0]
             try:
-                msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
+                msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue # not actually a press message; game state message
             yield sender, receivers, milestone, sent, msg
@@ -206,7 +211,7 @@ def generate_all_game_presses(cursor, game_name):
             receivers = "all"
 
             try:
-                msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
+                msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue
             yield sender, receivers, milestone, sent, msg
