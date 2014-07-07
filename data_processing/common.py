@@ -170,8 +170,8 @@ def generate_all_game_presses(cursor, game_name):
             try:
                 if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
                     # Get sender and receiver data from body of message if Re/Rcpt type, as subject gives wrong info in these cases
-                    tempmsg = re.split("End[\s+]of[\s+]message.",body)[0]
-                    metadata = re.split("in[\s+]\'"+game_name+"\':",tempmsg)[0]
+                    bodymsg = re.split("End[\s+]of[\s+]message.",body)[0]
+                    metadata = re.split("in[\s+]\'"+game_name+"\':",bodymsg)[0]
                     if metadata.count("Broadcast")>0:
                         metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
                         sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
@@ -181,7 +181,7 @@ def generate_all_game_presses(cursor, game_name):
                         receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
                         sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
             except IndexError:
-                pass
+                continue
             yield sender, receivers, milestone, sent, msg
 
         # grey presses
@@ -197,28 +197,35 @@ def generate_all_game_presses(cursor, game_name):
                 continue # not actually a press message; game state message
             yield sender, receivers, milestone, sent, msg
 
+        # broadcast messages
         elif subject.count("Broadcast") > 0:
             msg = re.split("End[\s+]of[\s+]message.",body)[0]
-
-            sender = re.split('[\s+]',re.split("in[\s+]\'" + game_name + "\':",msg)[0]) # Sender name in broadcast is many times in body, many times in subject
-            if sender[-2] == "as":
-                sender = sender[-1][0] # sender name from body
-                receivers = "all"
-            else:
-                if re.search("[\s+]from[\s+]",subject) > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
-                    sender = re.split("[\s+]from[\s+]",subject)[1]
-                    receivers = "all"
-                else:
-                    #print "------\n",game_name,"\n", subject,"\n", body,"\n",sent
-                    sender = "unknown"
-                    receivers = "all"
-
             try:
                 msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue
-            yield sender, receivers, milestone, sent, msg
 
+            bodymsg = re.split("End[\s+]of[\s+]message.",body)[0]
+            metadata = re.split("in[\s+]\'"+game_name+"\':",bodymsg)[0]
+
+            if metadata.count("Broadcast")>0: # If it is really a broadcast message (sometimes it is a normal press message)
+                try:
+                    metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                    sender = re.split("[\s+]",metadata[0].strip())[-1][0]
+                except IndexError:
+                    sender = "unknown"
+                receivers = "all"
+            else: # In case it is a press message
+                if metadata.count("from") > 0: # non-grey press message
+                    metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                    receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                    sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
+                else: # grey press message
+                    metadata = re.split("essage[\s+]to[\s+]",metadata)
+                    receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                    sender = "Re-unknown"
+
+            yield sender, receivers, milestone, sent, msg
 
 def generate_game_broadcast_presses(cursor, game_name):
     """Returns all broadcast messages in a game"""
@@ -235,19 +242,6 @@ def generate_game_broadcast_presses(cursor, game_name):
             body = body.encode("utf8").decode("unicode-escape")
         except UnicodeEncodeError:
             body = body.encode("ISO-8859-1").decode("unicode-escape")
-    
-        body = body.replace("\n"," ").replace(","," ")
-        msg = body.split("End of message.")[0]
-            
-        sender = msg.split(" in \'" + game_name + "\':")[0].split(' ') # Sender name in broadcast is many times in body, many times in subject
-        if sender[-2] == "as":
-            sender = sender[-1][0] # sender name from body
-        else:
-            if subject.count(" from ") > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
-                sender = subject.split(" from ")[1]
-            else:
-                sender = "unknown"
-        receivers = "all"
 
         try:
             # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
@@ -258,9 +252,32 @@ def generate_game_broadcast_presses(cursor, game_name):
                 milestone = subject.split("- ")[1].split(" ")[0]
             except:
                 continue # not actually a press message; invalid credential message
-
+    
+        msg = re.split("End[\s+]of[\s+]message.",body)[0]
         try:
-            msg = msg.split("in \'" + game_name+ "\':")[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
+            msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
         except IndexError:
             continue
+
+        bodymsg = re.split("End[\s+]of[\s+]message.",body)[0]
+        metadata = re.split("in[\s+]\'"+game_name+"\':",bodymsg)[0]
+
+        if metadata.count("Broadcast")>0: # If it is really a broadcast message (sometimes it is a normal press message)
+            try:
+                metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                sender = re.split("[\s+]",metadata[0].strip())[-1][0]
+            except IndexError:
+                sender = "unknown"
+            receivers = "all"
+        else: # In case it is a press message
+            if metadata.count("from") > 0: # non-grey press message
+                metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
+            else: # grey press message
+                metadata = re.split("essage[\s+]to[\s+]",metadata)
+                receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                sender = "Re-unknown"
+
         yield sender, receivers, milestone, sent, msg
+
