@@ -175,10 +175,10 @@ def generate_all_game_presses(cursor, game_name):
                     if metadata.count("Broadcast")>0:
                         metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
                         sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
-                        receivers = "all"
+                        receivers = "Re-all"
                     else:
                         metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
-                        receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                        receivers = "Re-" + ''.join(country[0] for country in re.split("[\s+,]",metadata[1]) if country!="" and country!="and")
                         sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
             except IndexError:
                 continue
@@ -218,11 +218,11 @@ def generate_all_game_presses(cursor, game_name):
             else: # In case it is a press message
                 if metadata.count("from") > 0: # non-grey press message
                     metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
-                    receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                    receivers = "Re-" + ''.join(country[0] for country in re.split("[\s+,]",metadata[1]) if country!="" and country!="and")
                     sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
                 else: # grey press message
                     metadata = re.split("essage[\s+]to[\s+]",metadata)
-                    receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                    receivers = "Re-" + ''.join(country[0] for country in re.split("[\s+,]",metadata[1]) if country!="" and country!="and")
                     sender = "Re-unknown"
 
             yield sender, receivers, milestone, sent, msg
