@@ -148,49 +148,49 @@ def generate_all_game_presses(cursor, game_name):
         # get milestone
         try:
             # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
-            milestone = body.split("Deadline: ")[1].split(" ")[0] 
+            milestone = re.split("[\s+]",re.split("Deadline:[\s+]",body)[1])[0]
         except IndexError:
             try:
                 # Get from subject
-                milestone = subject.split("- ")[1].split(" ")[0]
+                milestone = re.split("[\s+]",re.split("-[\s+]",subject)[1])[0]
             except:
                 continue # not actually a press message; invalid credential message
 
         # regular p2p or p2group presses
-        if subject.count("Press from ") > 0:
-        
-            sender = subject.lower().split("press from ")[1].split(" ")[0].upper() # lowercased to capture some cases
-            receivers = subject.lower().split("to ")[1].upper() # lowercased to capture some cases
-
-            if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
-                # receiver and sender are exchanged if the message is a reply or receipt notice
-                temp = sender
-                sender = receivers
-                receivers = temp
-                sender = "Re-"+sender
-                receivers = "Re-"+receivers
-        
-            msg = body.split("End of message.")[0]
+        if re.search("Press[\s+]from[\s+]",subject) != None:
+            msg = re.split("End[\s+]of[\s+]message.",body)[0]
             try:
                 msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
                 continue # not actually a press message; game state message
+
+            sender = re.split("[\s+]",re.split("press[\s+]from[\s+]",subject.lower())[1])[0].upper() # lowercased to capture some cases
+            receivers = re.split("to[\s+]",subject.lower())[1].upper() # lowercased to capture some cases
+
+            try:
+                if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
+                    # Get sender and receiver data from body of message if Re/Rcpt type, as subject gives wrong info in these cases
+                    tempmsg = re.split("End[\s+]of[\s+]message.",body)[0]
+                    metadata = re.split("in[\s+]\'"+game_name+"\':",tempmsg)[0]
+                    if metadata.count("Broadcast")>0:
+                        metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                        sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
+                        receivers = "all"
+                    else:
+                        metadata = re.split("[\s+]to[\s+]",re.split("essage[\s+]from[\s+]",metadata)[1])
+                        receivers = "Re-" + ''.join(country[0] for country in re.split("[ ,]",metadata[1]) if country!="" and country!="and")
+                        sender = "Re-" + re.split("[\s+]",metadata[0].strip())[-1][0]
+            except IndexError:
+                pass
             yield sender, receivers, milestone, sent, msg
 
         # grey presses
-        elif subject.count("Press to ") > 0:
+        elif re.search("Press[\s+]to[\s+]",subject)!=None:
             sender = "unknown"
-            receivers = subject.lower().split("to ")[1].upper() # lowercased to capture some cases
-
-            if subject.count("Rcpt:") > 0 or subject.count("Re:") > 0:
-                # receiver and sender are exchanged if the message is a reply or receipt notice
-                temp = sender
-                sender = receivers
-                receivers = temp
-                sender = "Re-"+sender
-                receivers = "Re-"+receivers
+            receivers = re.split("to[\s+]",subject.lower())[1].upper() # lowercased to capture some cases
+            # No Re/Rcpt messages in grey presses
         
-            msg = body.split("End of message.")[0]
+            msg = re.split("End[\s+]of[\s+]message.",body)[0]
             try:
                 msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
             except IndexError:
@@ -198,17 +198,20 @@ def generate_all_game_presses(cursor, game_name):
             yield sender, receivers, milestone, sent, msg
 
         elif subject.count("Broadcast") > 0:
-            msg = body.split("End of message.")[0]
-            
-            sender = msg.split(" in \'" + game_name + "\':")[0].split(' ') # Sender name in broadcast is many times in body, many times in subject
+            msg = re.split("End[\s+]of[\s+]message.",body)[0]
+
+            sender = re.split('[\s+]',re.split("in[\s+]\'" + game_name + "\':",msg)[0]) # Sender name in broadcast is many times in body, many times in subject
             if sender[-2] == "as":
                 sender = sender[-1][0] # sender name from body
+                receivers = "all"
             else:
-                if subject.count(" from ") > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
-                    sender = subject.split(" from ")[1]
+                if re.search("[\s+]from[\s+]",subject) > 0 and not (subject.startswith('Re:') or subject.startswith('Rcpt:')): # sender name from subject
+                    sender = re.split("[\s+]from[\s+]",subject)[1]
+                    receivers = "all"
                 else:
+                    #print "------\n",game_name,"\n", subject,"\n", body,"\n",sent
                     sender = "unknown"
-            receivers = "all"
+                    receivers = "all"
 
             try:
                 msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."

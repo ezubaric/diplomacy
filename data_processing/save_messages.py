@@ -28,6 +28,10 @@ if __name__ == "__main__":
                     game_messages[msg.strip()] = [sender,receivers,milestone,sent]
             for msg in game_messages:
                 metadata = game_messages[msg]
+                if metadata[0].startswith("Re-"):
+                    metadata[0] = metadata[0][3:]
+                if metadata[1].startswith("Re-"):
+                    metadata[1] = metadata[1][3:]
                 writer.writerow((metadata[0], metadata[1], metadata[2], metadata[3], msg))
         if empty_game:
             os.remove(fname)
