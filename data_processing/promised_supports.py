@@ -1,11 +1,12 @@
 # Get promised supports
 
 from __future__ import print_function
+import csv
 import unicodecsv
 from glob import glob
 import re
 from os.path import basename
-from collections import Counter
+from collections import Counter, defaultdict
 
 try:
     from tqdm import tqdm
@@ -65,3 +66,48 @@ print("turn- and pair-wise promises communicate to country being supported: ",
         for _, _, _, to, msgs in promised_supports
         ))
 
+# Now, let's get actual supports
+
+rdr = csv.DictReader(open("../movements.csv"))
+supports = [k for k in rdr
+            if k['order_type'] == 'support'
+            and k['subject'].startswith("USAK")]
+
+supp_games = defaultdict(lambda: defaultdict(lambda: []))
+for k in supports:
+    m = re.search("([SF]\d\d\d\d\w\w?) Results", k['subject'])
+    if m:
+        tup = (k['country'],
+               k['support_country'],
+               k['support_type'],
+               k['support_start'],
+               k['support_end'])
+        mile = m.groups()[0]
+        if tup not in supp_games[k['game']][mile]:
+            supp_games[k['game']][mile].append(tup)
+
+print("Total support moves actually executed (including self): ",
+      sum (1 for game in supp_games.values() for _ in game.values()))
+
+# How often are promises kept?
+
+truths, lies = [], []
+for game, mile, fro, to, promises in promised_supports:
+    beneficiaries = set(benef for _, benef in promises
+                        if benef[0] in to or to == 'all')  # ignore what the actual move would be
+    for ben in beneficiaries:
+        # check whether fro really supported ben in the given milestone
+        supported = False
+        for supp_move in supp_games[game][mile]:
+            supporter, supportee = supp_move[0], supp_move[1]
+            if supporter.startswith(fro) and supportee == ben:
+                supported = True  # fro kept her word!
+                break
+        tup = (game, mile, fro, ben)
+        if supported:
+            truths.append(tup)
+        else:
+            lies.append(tup)
+
+print("Promises kept: ", len(truths))
+print("Promises broken: ", len(lies)) 
