@@ -43,8 +43,12 @@ def write_moves(counts, totals, locations, filename):
             row["count"] = counts[(ss, cc, ee)]
             row["start_freq"] = float(counts[(ss, cc, ee)]) / float(totals[(ss, cc)])
             row["all_freq"] = float(counts[(ss, cc, ee)]) / float(country_totals[cc])
-            sx, sy = locations.coord(ss)
-            ex, ey = locations.coord(ee)
+            try:
+                sx, sy = locations.coord(ss)
+                ex, ey = locations.coord(ee)
+            except KeyError:
+                continue
+            out.writerow(row)
 
 if __name__ == "__main__":
     counts = defaultdict(int)
