@@ -4,8 +4,7 @@ import sys
 # from unidecode import unidecode  # pyflakes reports unused
 import csv
 from dateutil import parser
-import data_processing
-from data_processing.common import kCOUNTRIES, kADJECTIVES, kGOODVARS, game_to_variant
+from common import kCOUNTRIES, kADJECTIVES, kGOODVARS, game_to_variant
 
 kMOVEMENT = re.compile("Movement results")
 

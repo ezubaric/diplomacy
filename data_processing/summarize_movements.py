@@ -49,6 +49,7 @@ def write_moves(counts, totals, locations, filename):
             row["count"] = counts[(ss, cc, ee)]
             row["start_freq"] = float(counts[(ss, cc, ee)]) / float(totals[(ss, cc)])
             row["all_freq"] = float(counts[(ss, cc, ee)]) / float(country_totals[cc])
+
             sx, sy = locations.coord(ss)
             ex, ey = locations.coord(ee)
             row["start_x"] = sx
