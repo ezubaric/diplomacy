@@ -4,122 +4,61 @@ Please try to extend the test strings with as many crazy examples from the data
 as we can get.
 """
 
+from __future__ import print_function
 import re
+from glob import glob
+import csv
+import unicodecsv
 
-s = """
-A VIE-GAL
-A BUD S A RUM
-A RUM S A VIE-GAL
+# get list of territory abbreviations from Jordan's file
+terr_lower = set([row['abbreviation'].split()[0]
+                  for row in csv.DictReader(open("../images/map_locations.csv"))])
 
-A Ser Support A Rum-Bul
+# generate uppercase and titlecase variants: aaa -> (aaa, AAA, Aaa)
+territory = list(terr_lower) + [t.upper() for t in terr_lower] + \
+        [t[0].upper() + t[1:] for t in terr_lower]
+    
+# turn into or-regex plus optional "sc" (I don't know what it means)
+territory = r"(?:{})(?:\s*\((?:sc|Sc|SC)\))?".format("|".join(territory))
 
-f Por s F Spa,
-f Spa (sc) s f LYO m WES,   # what does sc mean? only one that breaks for now
-f LYO m WES,
-f WES m Naf,
-f TYS m Tun, &
-a Pie s f Mar.
+# regex to match human orders.
+# It contains two groups:
+#  - one covering the ENTIRE match
+#  - one covering the support marker (is an empty string if it's not a support order).
+# Therefore you can do:
+#   for match, supp in re.findall(order_re, press):
+#        if supp:
+#            ... consider it a promise or a request
 
-HOL to BEL supported by RUH
-NTH to ENG to cut support
-BUR to MUN to cut support
-KIE to HEL
+order_re = re.compile(r"""(
+    (?:[afAF]\s+)?  # army or fleet
+    {0:}            # territory name
+    (?:\s+[Hh]olds?|  # hold  (probably incomplete)
+       (?:\s*-\s*|  # move denoted by dash
+          \s+to\s+| # move denoted by " to "
+          \s+m\s+|  # move denoted by " m "
+          \s+([sS](?:upport)?)\s+(?:[afAF]\s+)?)  # support order
+          {0:}(?:\s*-\s*{0:})?)
+)""".format(territory), re.VERBOSE)
 
-CLY-LVP
-NWG-EDI
-FIN-NOR
+# Count messages
 
+n_with_order, n_with_supp = 0, 0
+for f in glob("../press_data/*"):
+    rdr = unicodecsv.reader(open(f))
+    rdr.next()  # discard header
+    for fro, to, mile, _, msg in rdr:
+        if fro not in ("M", "unknown") and to != "M" and not mile.endswith("X"):
+            has_match = False
+            has_supp = False
+            for line in msg.split("\n"):
+                for match, supp in re.findall(order_re, line):
+                    has_match = True
+                    if supp:
+                        has_supp = True
+                    #print(match, "\t|\t", line)
+            n_with_order += has_match
+            n_with_supp += has_supp
 
-A UKR-MOS
-A SEV S A UKR-MOS
-A BOH-SIL
-A WAR S A BOH-SIL
-A GAL S A WAR
-A RUM-UKR
-A TYR S A MUN
-F TYS-LYO
-F ION-TYS
-
-
-A BUR-RUH
-A MUN S A BUR-RUH
-A GAS-BUR
-A MAR S A GAS-BUR
-F BRE-PIC
-A PAR S F BRE-PIC
-F MAO-BRE
-F SPA(SC)-MAO
-F POR S F SPA(SC)-MAO
-F WES S F SPA(SC)-MAO
-A TUS-PIE
-
-Hel-Den
-Bel Holds
-Ruh S Bel
-Hol S Bel
-
-
-A GAL-SIL (leads the attack)
-A BOH S A GAL-SIL (supports the attack)
-A UKR-WAR (cuts support)
-A MOS S A UKR-WAR (just in case)
-A SEV S A MOS (keeps Moscow safe)
-A TYR S A MUN (protects Munich)
-A BUD-GAL
-A VIE S A BUD-GAL
-
-A MUN S A GAL-SIL (supports the attack)
-
-Spring:
- A Tri-Ven
- F TYS-Nap
-Also, since the German cant cover all my retreats:
- A Tyr-Mun
- A Boh S A Tyr-Mun
-
-I "block" your move to Naples
- A Rom-Nap
-
-Fall :
- A Ven-Tus (for convoy next year)
- And possibly:
- A Rom-Lon (or Bel, Wal, Lvp, or Cly) via convoy
-
-A GAL-WAR (leads the attack on Warsaw)
-A UKR S A GAL-WAR (supports the attack)
-A MOS S A GAL-WAR (supports the attack)
-A SEV S A MOS (supports Moscow)
-A TYR-MUN (stab #1!)
-A BOH S A TYR-MUN (supports stab #1)
-A VIE-GAL
-A TRI-VEN (stab #2!)
-F TYS-NAP (stab #3!)
-F LYO-WES
-
-A ROM-NAP
-
-I am
-planning to order A TYR-MUN, A BOH S A TYR-MUN.  Italy is expecting
-me to support Munich from Tyrolia, but he is also planning to order
-support from Burgundy, which is why I need your support from either
-Ruhr or Berlin for A TYR-MUN.
-
-Mao-eng
-Pic s bur
-
-a new alliance is formed
-a pic s bur
-a mar s bur
-a  bur hold
-f nth-den
-a pie-ven
-a apu s pie-ven
-f rom hold
-f ion s gre
-f aeg s bul
-f adr s pie-ven
-"""  # TODO: get more
-
-territory = "[A-Z][A-Za-z]{2}"  # TODO: refine using list
-print re.findall(r"[afAF] {0:}(?:-| m | [sS](?:upport)? [afAF] ){0:}(?:-{0:})?"\
-    .format(territory), s)
+print("Presses with human written orders: ", n_with_order)
+print("Presses with support orders (subset): ", n_with_supp)
