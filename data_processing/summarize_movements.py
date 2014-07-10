@@ -24,7 +24,13 @@ class LocationLookup:
                 self._abbrv[ii["name"]] = ii["abbreviation"]
 
     def coord(self, location):
-        return self._locations[location]
+        location = location.replace("->", "")
+        location = location.strip()
+        if location in self._locations:
+            return self._locations[location]
+        else:
+            print("Missing '%s'" % location)
+            return None
 
 def write_moves(counts, totals, locations, filename):
     country_totals = defaultdict(int)
@@ -45,6 +51,11 @@ def write_moves(counts, totals, locations, filename):
             row["all_freq"] = float(counts[(ss, cc, ee)]) / float(country_totals[cc])
             sx, sy = locations.coord(ss)
             ex, ey = locations.coord(ee)
+            row["start_x"] = sx
+            row["start_y"] = sy
+            row["end_x"] = ex
+            row["end_y"] = ey
+            out.writerow(row)
 
 if __name__ == "__main__":
     counts = defaultdict(int)
@@ -55,7 +66,9 @@ if __name__ == "__main__":
     with open(sys.argv[1]) as infile:
         for ii in csv.DictReader(infile):
             if ii["order_type"] == "move":
-                counts[(ii["start_location"], ii["country"], ii["end_location"])] += 1
-                totals[(ii["start_location"], ii["country"])] += 1
+                if locations.coord(ii["start_location"]) and \
+                  locations.coord(ii["end_location"]):
+                  counts[(ii["start_location"], ii["country"], ii["end_location"])] += 1
+                  totals[(ii["start_location"], ii["country"])] += 1
 
     write_moves(counts, totals, locations, sys.argv[3])

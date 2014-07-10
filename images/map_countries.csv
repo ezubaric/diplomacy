@@ -1,0 +1,89 @@
+territory,x,y,owner,geography,supply
+North Atlantic Ocean,0,21,,water,
+North Atlantic Ocean,3,21,,water,
+North Atlantic Ocean,3,20,,water,
+North Atlantic Ocean,2,20,,water,
+North Atlantic Ocean,2,19,,water,
+North Atlantic Ocean,3,19,,water,
+North Atlantic Ocean,3,18,,water,
+North Atlantic Ocean,0,18,,water,
+North Africa,0,0,,land,
+North Africa,3,0,,land,
+North Africa,3,2,,land,
+North Africa,0,2,,land,
+Barents Sea,11,21,,water,
+Barents Sea,21,21,,water,
+Barents Sea,21,18,,water,
+Barents Sea,11,18,,water,
+Syria,20,2,,land,
+Syria,21,2,,land,
+Syria,21,0,,land,
+Syria,20,0,,land,
+Berlin,11,13,Germany,land,1
+Berlin,13,13,Germany,land,1
+Berlin,13,11,Germany,land,1
+Berlin,11,11,Germany,land,1
+Denmark,9,16,,passable,1
+Denmark,10,16,,passable,1
+Denmark,10,13,,passable,1
+Denmark,9,13,,passable,1
+Kiel,7,13,Germany,passable,1
+Kiel,11,13,Germany,passable,1
+Kiel,11,11,Germany,passable,1
+Kiel,7,11,Germany,passable,1
+Ruhr,6,13,Germany,land,
+Ruhr,7,13,Germany,land,
+Ruhr,7,11,Germany,land,
+Ruhr,6,11,Germany,land,
+Prussia,13,13,Germany,land,
+Prussia,14,13,Germany,land,
+Prussia,14,11,Germany,land,
+Prussia,13,11,Germany,land,
+Silesia,12,11,Germany,land,
+Silesia,14,11,Germany,land,
+Silesia,14,10,Germany,land,
+Silesia,12,10,Germany,land,
+Munich,6,11,Germany,land,1
+Munich,12,11,Germany,land,1
+Munich,12,10,Germany,land,
+Munich,6,10,Germany,land,
+Mid-Atlantic Ocean,0,18,,water,
+Mid-Atlantic Ocean,1,18,,water,
+Mid-Atlantic Ocean,1,9,,water,
+Mid-Atlantic Ocean,3,9,,water,
+Mid-Atlantic Ocean,3,8,,water,
+Mid-Atlantic Ocean,2,8,,water,
+Mid-Atlantic Ocean,2,6,,water,
+Mid-Atlantic Ocean,3,6,,water,
+Mid-Atlantic Ocean,3,5,,water,
+Mid-Atlantic Ocean,1,5,,water,
+Mid-Atlantic Ocean,1,2,,water,
+Mid-Atlantic Ocean,0,2,,water,
+Tunis,3,2,,land,1
+Tunis,5,2,,land,1
+Tunis,5,0,,land,1
+Tunis,3,0,,land,1
+Clyde,2,20,England,land,
+Clyde,4,20,England,land,
+Clyde,4,19,England,land,
+Clyde,2,19,England,land,
+Edinburgh,4,20,England,land,1
+Edinburgh,5,20,England,land,1
+Edinburgh,5,18,England,land,1
+Edinburgh,4,18,England,land,1
+Liverpool,3,19,England,land,1
+Liverpool,4,19,England,land,1
+Liverpool,4,17,England,land,1
+Liverpool,3,17,England,land,1
+London,4,16,England,land,1
+London,6,16,England,land,1
+London,6,15,England,land,1
+London,4,15,England,land,1
+Wales,3,17,England,land,
+Wales,4,17,England,land,
+Wales,4,15,England,land,
+Wales,3,15,England,land,
+Yorkshire,4,18,England,land,
+Yorkshire,5,18,England,land,
+Yorkshire,5,16,England,land,
+Yorkshire,4,16,England,land,
