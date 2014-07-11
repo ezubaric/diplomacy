@@ -3,7 +3,7 @@ import csv
 import sys
 from collections import defaultdict
 
-kFIELDNAMES = ["start_name", "end_name", "country", "count", "start_freq",
+kFIELDNAMES = ["start_name", "end_name", "country", "target", "count", "start_freq",
                "all_freq", "start_x", "start_y", "end_x", "end_y"]
 
 class LocationLookup:
@@ -13,15 +13,23 @@ class LocationLookup:
         self._country = {}
         self._abbrv = {}
 
+        territory_count = defaultdict(int)
         with open(lookup_file) as infile:
             for ii in csv.DictReader(infile):
-                self._locations[ii["name"]] = (ii["x"], ii["y"])
-                self._type[ii["name"]] = ii["type"].split("(")[0]
-                self._country[ii["name"]] = None
-                if "(" in ii["type"]:
-                    self._country[ii["name"]] = ii["type"].split("(")[1].split(")")[0]
+                name = ii["territory"]
+                territory_count[name] += 1
+                if name in self._locations:
+                    x, y = self._locations[name]
+                    x += float(ii["x"])
+                    y += float(ii["y"])
+                    self._locations[name] = (x, y)
+                else:
+                    self._locations[name] = (float(ii["x"]), float(ii["y"]))
 
-                self._abbrv[ii["name"]] = ii["abbreviation"]
+        for ii in territory_count:
+            x, y = self._locations[ii]
+            self._locations[ii] =  (x / float(territory_count[ii]),
+                                    y / float(territory_count[ii]))
 
     def coord(self, location):
         location = location.replace("->", "")
@@ -33,34 +41,37 @@ class LocationLookup:
             return None
 
 def write_moves(counts, totals, locations, filename):
-    country_totals = defaultdict(int)
-    for ss, cc in totals:
-        country_totals[cc] += totals[(ss, cc)]
-
-    with open("%s.move.csv" % filename, 'w') as outfile:
+    with open("%s.%s.csv" % (type, filename), 'w') as outfile:
         out = csv.DictWriter(outfile, kFIELDNAMES)
         out.writeheader()
 
         row = {}
-        for ss, cc, ee in counts:
+        for ss, cc, tt, ee in counts:
+            assert totals[cc] > 0, "Wrong total for %s: tuple %s" % \
+              (cc, str((ss, cc, tt, ee)))
+            assert totals[(ss, cc)] > 0, "Wrong total for %s, %s: tuple %s" % \
+              (ss, cc, str((ss, cc, tt, ee)))
             row["start_name"] = ss
             row["end_name"] = ee
             row["country"] = cc
-            row["count"] = counts[(ss, cc, ee)]
-            row["start_freq"] = float(counts[(ss, cc, ee)]) / float(totals[(ss, cc)])
-            row["all_freq"] = float(counts[(ss, cc, ee)]) / float(country_totals[cc])
+            row["count"] = counts[(ss, cc, tt, ee)]
+            row["start_freq"] = float(counts[(ss, cc, tt, ee)]) / float(totals[(ss, cc)])
+            row["all_freq"] = float(counts[(ss, cc, tt, ee)]) / float(totals[cc])
 
-            sx, sy = locations.coord(ss)
-            ex, ey = locations.coord(ee)
-            row["start_x"] = sx
-            row["start_y"] = sy
-            row["end_x"] = ex
-            row["end_y"] = ey
-            out.writerow(row)
+            if locations.coord(ss) and locations.coord(ee):
+              sx, sy = locations.coord(ss)
+              ex, ey = locations.coord(ee)
+              row["start_x"] = sx
+              row["start_y"] = sy
+              row["end_x"] = ex
+              row["end_y"] = ey
+              out.writerow(row)
 
 if __name__ == "__main__":
     counts = defaultdict(int)
     totals = defaultdict(int)
+    supporting_totals = defaultdict(int)
+    supports = defaultdict(int)
 
     locations = LocationLookup(sys.argv[2])
 
@@ -69,7 +80,13 @@ if __name__ == "__main__":
             if ii["order_type"] == "move":
                 if locations.coord(ii["start_location"]) and \
                   locations.coord(ii["end_location"]):
-                  counts[(ii["start_location"], ii["country"], ii["end_location"])] += 1
+                  counts[(ii["start_location"], ii["country"], "", ii["end_location"])] += 1
                   totals[(ii["start_location"], ii["country"])] += 1
+                  totals[ii["country"]] += 1
+            if ii["order_type"] == "support":
+                supporting_totals[ii["country"]] += 1
+                supporting_totals[(ii["start_location"], ii["country"])] += 1
+                supports[(ii["start_location"], ii["country"], ii["support_country"], ii["support_start"])] += 1
 
     write_moves(counts, totals, locations, sys.argv[3])
+    write_moves(supports, supporting_totals, locations, sys.argv[3])

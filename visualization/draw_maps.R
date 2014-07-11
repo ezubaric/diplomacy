@@ -19,7 +19,8 @@ library(ggplot2)
 # load in the map layer
 map <- read.csv("images/map_countries.csv")
 
-country_names <- aggregate(map, by=list(map$territory), FUN=mean)
+country_names <- aggregate(map, by=list(map$territory, map$display), FUN=mean)
 country_names$territory <- country_names$Group.1
+country_names$display <- country_names$Group.2
 
-countries <- ggplot() + geom_polygon(data=map, mapping=aes(x=x, y=y, group=territory, color=owner, fill=geography)) + scale_fill_manual(values=c("#AAFFAA", "#AADDDD", "#AAAAFF")) + geom_text(data=country_names, aes(x,y,label=territory))
+countries <- ggplot() + geom_polygon(data=map, mapping=aes(x=x, y=y, group=territory, color=owner, fill=geography)) + scale_fill_manual(values=c("#AAFFAA", "#AADDDD", "#AAAAFF")) + geom_text(data=country_names, aes(x,y,label=display))

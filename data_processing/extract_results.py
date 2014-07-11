@@ -89,8 +89,8 @@ def movement_tuples(message, row):
                   parse_move(order, country)
                 row["support_country"] = sup_country
                 row["support_type"] = sup_type
-                row["support_start"] = sup_start
-                row["support_end"] = sup_end
+                row["support_start"] = sup_start.replace(".", "").strip()
+                row["support_end"] = sup_end.replace(".", "").strip()
             elif "->" or "HOLD" in order:
                 if "->" in order:
                     row["order_type"] = "move"

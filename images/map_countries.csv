@@ -1,89 +1,368 @@
-territory,x,y,owner,geography,supply
-North Atlantic Ocean,0,21,,water,
-North Atlantic Ocean,3,21,,water,
-North Atlantic Ocean,3,20,,water,
-North Atlantic Ocean,2,20,,water,
-North Atlantic Ocean,2,19,,water,
-North Atlantic Ocean,3,19,,water,
-North Atlantic Ocean,3,18,,water,
-North Atlantic Ocean,0,18,,water,
-North Africa,0,0,,land,
-North Africa,3,0,,land,
-North Africa,3,2,,land,
-North Africa,0,2,,land,
-Barents Sea,11,21,,water,
-Barents Sea,21,21,,water,
-Barents Sea,21,18,,water,
-Barents Sea,11,18,,water,
-Syria,20,2,,land,
-Syria,21,2,,land,
-Syria,21,0,,land,
-Syria,20,0,,land,
-Berlin,11,13,Germany,land,1
-Berlin,13,13,Germany,land,1
-Berlin,13,11,Germany,land,1
-Berlin,11,11,Germany,land,1
-Denmark,9,16,,passable,1
-Denmark,10,16,,passable,1
-Denmark,10,13,,passable,1
-Denmark,9,13,,passable,1
-Kiel,7,13,Germany,passable,1
-Kiel,11,13,Germany,passable,1
-Kiel,11,11,Germany,passable,1
-Kiel,7,11,Germany,passable,1
-Ruhr,6,13,Germany,land,
-Ruhr,7,13,Germany,land,
-Ruhr,7,11,Germany,land,
-Ruhr,6,11,Germany,land,
-Prussia,13,13,Germany,land,
-Prussia,14,13,Germany,land,
-Prussia,14,11,Germany,land,
-Prussia,13,11,Germany,land,
-Silesia,12,11,Germany,land,
-Silesia,14,11,Germany,land,
-Silesia,14,10,Germany,land,
-Silesia,12,10,Germany,land,
-Munich,6,11,Germany,land,1
-Munich,12,11,Germany,land,1
-Munich,12,10,Germany,land,
-Munich,6,10,Germany,land,
-Mid-Atlantic Ocean,0,18,,water,
-Mid-Atlantic Ocean,1,18,,water,
-Mid-Atlantic Ocean,1,9,,water,
-Mid-Atlantic Ocean,3,9,,water,
-Mid-Atlantic Ocean,3,8,,water,
-Mid-Atlantic Ocean,2,8,,water,
-Mid-Atlantic Ocean,2,6,,water,
-Mid-Atlantic Ocean,3,6,,water,
-Mid-Atlantic Ocean,3,5,,water,
-Mid-Atlantic Ocean,1,5,,water,
-Mid-Atlantic Ocean,1,2,,water,
-Mid-Atlantic Ocean,0,2,,water,
-Tunis,3,2,,land,1
-Tunis,5,2,,land,1
-Tunis,5,0,,land,1
-Tunis,3,0,,land,1
-Clyde,2,20,England,land,
-Clyde,4,20,England,land,
-Clyde,4,19,England,land,
-Clyde,2,19,England,land,
-Edinburgh,4,20,England,land,1
-Edinburgh,5,20,England,land,1
-Edinburgh,5,18,England,land,1
-Edinburgh,4,18,England,land,1
-Liverpool,3,19,England,land,1
-Liverpool,4,19,England,land,1
-Liverpool,4,17,England,land,1
-Liverpool,3,17,England,land,1
-London,4,16,England,land,1
-London,6,16,England,land,1
-London,6,15,England,land,1
-London,4,15,England,land,1
-Wales,3,17,England,land,
-Wales,4,17,England,land,
-Wales,4,15,England,land,
-Wales,3,15,England,land,
-Yorkshire,4,18,England,land,
-Yorkshire,5,18,England,land,
-Yorkshire,5,16,England,land,
-Yorkshire,4,16,England,land,
+territory,x,y,owner,geography,supply,display
+North Atlantic Ocean,0,21,,water,,NAO
+North Atlantic Ocean,1,21,,water,,NAO
+North Atlantic Ocean,2,21,,water,,NAO
+North Atlantic Ocean,3,21,,water,,NAO
+North Atlantic Ocean,3,20,,water,,NAO
+North Atlantic Ocean,2,20,,water,,NAO
+North Atlantic Ocean,2,19,,water,,NAO
+North Atlantic Ocean,3,19,,water,,NAO
+North Atlantic Ocean,3,18,,water,,NAO
+North Atlantic Ocean,0,18,,water,,NAO
+North Atlantic Ocean,0,19,,water,,NAO
+North Atlantic Ocean,0,20,,water,,NAO
+North Africa,0,0,,land,,North Africa
+North Africa,3,0,,land,,North Africa
+North Africa,3,2,,land,,North Africa
+North Africa,0,2,,land,,North Africa
+Barents Sea,11,21,,water,,Barents Sea
+Barents Sea,21,21,,water,,Barents Sea
+Barents Sea,21,18,,water,,Barents Sea
+Barents Sea,11,18,,water,,Barents Sea
+Berlin,11,13,Germany,land,1,Berlin
+Berlin,13,13,Germany,land,1,Berlin
+Berlin,13,11,Germany,land,1,Berlin
+Berlin,11,11,Germany,land,1,Berlin
+Denmark,9,16,,passable,1,DEN
+Denmark,10,16,,passable,1,DEN
+Denmark,10,13,,passable,1,DEN
+Denmark,9,13,,passable,1,DEN
+Kiel,7,13,Germany,passable,1,Kiel
+Kiel,11,13,Germany,passable,1,Kiel
+Kiel,11,11,Germany,passable,1,Kiel
+Kiel,7,11,Germany,passable,1,Kiel
+Ruhr,6,13,Germany,land,,Ruhr
+Ruhr,7,13,Germany,land,,Ruhr
+Ruhr,7,11,Germany,land,,Ruhr
+Ruhr,6,11,Germany,land,,Ruhr
+Prussia,13,13,Germany,land,,PRU
+Prussia,14,13,Germany,land,,PRU
+Prussia,14,11,Germany,land,,PRU
+Prussia,13,11,Germany,land,,PRU
+Silesia,12,11,Germany,land,,Silesia
+Silesia,14,11,Germany,land,,Silesia
+Silesia,14,10,Germany,land,,Silesia
+Silesia,12,10,Germany,land,,Silesia
+Munich,6,11,Germany,land,1,Munich
+Munich,12,11,Germany,land,1,Munich
+Munich,12,10,Germany,land,1,Munich
+Munich,6,10,Germany,land,1,Munich
+Mid-Atlantic Ocean,0,18,,water,,MAO
+Mid-Atlantic Ocean,1,18,,water,,MAO
+Mid-Atlantic Ocean,1,9,,water,,MAO
+Mid-Atlantic Ocean,3,9,,water,,MAO
+Mid-Atlantic Ocean,3,8,,water,,MAO
+Mid-Atlantic Ocean,2,8,,water,,MAO
+Mid-Atlantic Ocean,2,6,,water,,MAO
+Mid-Atlantic Ocean,3,6,,water,,MAO
+Mid-Atlantic Ocean,3,5,,water,,MAO
+Mid-Atlantic Ocean,1,5,,water,,MAO
+Mid-Atlantic Ocean,1,2,,water,,MAO
+Mid-Atlantic Ocean,0,2,,water,,MAO
+Mid-Atlantic Ocean,0,5,,water,,MAO
+Mid-Atlantic Ocean,0,6,,water,,MAO
+Mid-Atlantic Ocean,0,7,,water,,MAO
+Mid-Atlantic Ocean,0,8,,water,,MAO
+Mid-Atlantic Ocean,0,9,,water,,MAO
+Tunis,3,2,,land,1,Tunis
+Tunis,5,2,,land,1,Tunis
+Tunis,5,0,,land,1,Tunis
+Tunis,3,0,,land,1,Tunis
+Clyde,2,20,England,land,,Clyde
+Clyde,4,20,England,land,,Clyde
+Clyde,4,19,England,land,,Clyde
+Clyde,2,19,England,land,,Clyde
+Edinburgh,4,20,England,land,1,EDI
+Edinburgh,5,20,England,land,1,EDI
+Edinburgh,5,18,England,land,1,EDI
+Edinburgh,4,18,England,land,1,EDI
+Liverpool,3,19,England,land,1,LIV
+Liverpool,4,19,England,land,1,LIV
+Liverpool,4,17,England,land,1,LIV
+Liverpool,3,17,England,land,1,LIV
+London,4,16,England,land,1,London
+London,6,16,England,land,1,London
+London,6,15,England,land,1,London
+London,4,15,England,land,1,London
+Wales,3,17,England,land,,WAL
+Wales,4,17,England,land,,WAL
+Wales,4,15,England,land,,WAL
+Wales,3,15,England,land,,WAL
+Yorkshire,4,18,England,land,,YOR
+Yorkshire,5,18,England,land,,YOR
+Yorkshire,5,16,England,land,,YOR
+Yorkshire,4,16,England,land,,YOR
+Picardy,2,13,France,land,,Picardy
+Picardy,5,13,France,land,,Picardy
+Picardy,5,12,France,land,,Picardy
+Picardy,2,12,France,land,,Picardy
+Brest,1,13,France,land,supply,Brest
+Brest,2,13,France,land,supply,Brest
+Brest,2,11,France,land,supply,Brest
+Brest,1,11,France,land,supply,Brest
+Paris,2,12,France,land,supply,Paris
+Paris,4,12,France,land,supply,Paris
+Paris,4,11,France,land,supply,Paris
+Paris,2,11,France,land,supply,Paris
+Burgundy,4,12,France,land,,Burgundy
+Burgundy,6,12,France,land,,Burgundy
+Burgundy,6,10,France,land,,Burgundy
+Burgundy,4,10,France,land,,Burgundy
+Marseilles,4,10,France,land,supply,MAR
+Marseilles,5,10,France,land,supply,MAR
+Marseilles,5,7,France,land,supply,MAR
+Marseilles,4,7,France,land,supply,MAR
+Gascony,1,11,France,land,,Gascony
+Gascony,4,11,France,land,,Gascony
+Gascony,4,9,France,land,,Gascony
+Gascony,1,9,France,land,,Gascony
+Naples,7,2,Italy,land,,Naples
+Naples,10,2,Italy,land,,Naples
+Naples,10,1,Italy,land,,Naples
+Naples,7,1,Italy,land,,Naples
+Rome,7,4,Italy,land,1,Rome
+Rome,8,4,Italy,land,1,Rome
+Rome,8,2,Italy,land,1,Rome
+Rome,7,2,Italy,land,1,Rome
+Venice,7,7,Italy,land,1,Venice
+Venice,9,7,Italy,land,1,Venice
+Venice,9,4,Italy,land,1,Venice
+Venice,7,4,Italy,land,1,Venice
+Apulia,8,4,Italy,land,,Apulia
+Apulia,10,4,Italy,land,,Apulia
+Apulia,10,2,Italy,land,,Apulia
+Apulia,8,2,Italy,land,,Apulia
+Tuscany,5,6,Italy,land,,Tuscany
+Tuscany,7,6,Italy,land,,Tuscany
+Tuscany,7,3,Italy,land,,Tuscany
+Tuscany,5,3,Italy,land,,Tuscany
+Piedmont,5,9,Italy,land,,Piedmont
+Piedmont,7,9,Italy,land,,Piedmont
+Piedmont,7,6,Italy,land,,Piedmont
+Piedmont,5,6,Italy,land,,Piedmont
+Budapest,12,8,Austria,land,1,Budapest
+Budapest,15,8,Austria,land,1,Budapest
+Budapest,15,7,Austria,land,1,Budapest
+Budapest,12,7,Austria,land,1,Budapest
+Trieste,9,8,Austria,land,1,Trieste
+Trieste,12,8,Austria,land,1,Trieste
+Trieste,12,5,Austria,land,1,Trieste
+Trieste,9,5,Austria,land,1,Trieste
+Vienna,9,9,Austria,land,1,Vienna
+Vienna,13,9,Austria,land,1,Vienna
+Vienna,13,8,Austria,land,1,Vienna
+Vienna,9,8,Austria,land,1,Vienna
+Bohemia,9,10,Austria,land,,Bohemia
+Bohemia,13,10,Austria,land,,Bohemia
+Bohemia,13,9,Austria,land,,Bohemia
+Bohemia,9,9,Austria,land,,Bohemia
+Galicia,13,10,Austria,land,,Galicia
+Galicia,15,10,Austria,land,,Galicia
+Galicia,15,8,Austria,land,,Galicia
+Galicia,13,8,Austria,land,,Galicia
+Tyrolia,7,10,Austria,land,,Tyrolia
+Tyrolia,9,10,Austria,land,,Tyrolia
+Tyrolia,9,7,Austria,land,,Tyrolia
+Tyrolia,7,7,Austria,land,,Tyrolia
+Constantinople,18,5,Turkey,passable,1,CON
+Constantinople,19,5,Turkey,passable,1,CON
+Constantinople,19,2,Turkey,passable,1,CON
+Constantinople,18,2,Turkey,passable,1,CON
+Ankara,19,5,Turkey,land,1,ANK
+Ankara,20,5,Turkey,land,1,ANK
+Ankara,20,3,Turkey,land,1,ANK
+Ankara,19,3,Turkey,land,1,ANK
+Smyrna,19,3,Turkey,land,1,SMY
+Smyrna,20,3,Turkey,land,1,SMY
+Smyrna,20,1,Turkey,land,1,SMY
+Smyrna,19,1,Turkey,land,1,SMY
+Armenia,20,9,Turkey,land,,ARM
+Armenia,21,9,Turkey,land,,ARM
+Armenia,21,2,Turkey,land,,ARM
+Armenia,20,2,Turkey,land,,ARM
+Syria,20,2,Turkey,land,,SYR
+Syria,21,2,Turkey,land,,SYR
+Syria,21,0,Turkey,land,,SYR
+Syria,20,0,Turkey,land,,SYR
+Finland,16,17,Russia,land,,Finland
+Finland,20,17,Russia,land,,Finland
+Finland,20,15,Russia,land,,Finland
+Finland,16,15,Russia,land,,Finland
+Livonia,14,13,Russia,land,,Livonia
+Livonia,20,13,Russia,land,,Livonia
+Livonia,20,12,Russia,land,,Livonia
+Livonia,14,12,Russia,land,,Livonia
+Ukraine,15,10,Russia,land,,Ukraine
+Ukraine,17,10,Russia,land,,Ukraine
+Ukraine,17,9,Russia,land,,Ukraine
+Ukraine,15,9,Russia,land,,Ukraine
+Sevastopol,17,10,Russia,land,1,Sevastopol
+Sevastopol,21,10,Russia,land,1,Sevastopol
+Sevastopol,21,9,Russia,land,1,Sevastopol
+Sevastopol,17,9,Russia,land,1,Sevastopol
+Moscow,16,12,Russia,land,1,Moscow
+Moscow,21,12,Russia,land,1,Moscow
+Moscow,21,10,Russia,land,1,Moscow
+Moscow,16,10,Russia,land,1,Moscow
+St Petersburg,20,18,Russia,land,1,STP
+St Petersburg,21,18,Russia,land,1,STP
+St Petersburg,21,12,Russia,land,1,STP
+St Petersburg,20,12,Russia,land,1,STP
+St Petersburg (north coast),20.5,17,Russia,land,1,N
+St Petersburg (south coast),20.5,13,Russia,land,1,S
+Warsaw,14,12,Russia,land,1,Warsaw
+Warsaw,16,12,Russia,land,1,Warsaw
+Warsaw,16,10,Russia,land,1,Warsaw
+Warsaw,14,10,Russia,land,1,Warsaw
+Norwegian Sea,3,21,,water,,Norwegian Sea
+Norwegian Sea,11,21,,water,,Norwegian Sea
+Norwegian Sea,11,18,,water,,Norwegian Sea
+Norwegian Sea,9,18,,water,,Norwegian Sea
+Norwegian Sea,9,19,,water,,Norwegian Sea
+Norwegian Sea,5,19,,water,,Norwegian Sea
+Norwegian Sea,5,20,,water,,Norwegian Sea
+Norwegian Sea,3,20,,water,,Norwegian Sea
+Barents Sea,11,21,,water,,Barents Sea
+Barents Sea,21,21,,water,,Barents Sea
+Barents Sea,21,18,,water,,Barents Sea
+Barents Sea,11,18,,water,,Barents Sea
+Skagerrak,8,17,,water,,Skagerrak
+Skagerrak,10,17,,water,,Skagerrak
+Skagerrak,10,16,,water,,Skagerrak
+Skagerrak,8,16,,water,,Skagerrak
+Helgoland Bight,8,15,,water,,HEL
+Helgoland Bight,9,15,,water,,HEL
+Helgoland Bight,9,13,,water,,HEL
+Helgoland Bight,8,13,,water,,HEL
+Baltic Sea,10,15,,water,,Baltic Sea
+Baltic Sea,15,15,,water,,Baltic Sea
+Baltic Sea,15,13,,water,,Baltic Sea
+Baltic Sea,10,13,,water,,Baltic Sea
+Gulf of Bothnia,15,15,,water,,Gulf of Bothnia
+Gulf of Bothnia,20,15,,water,,Gulf of Bothnia
+Gulf of Bothnia,20,13,,water,,Gulf of Bothnia
+Gulf of Bothnia,15,13,,water,,Gulf of Bothnia
+Irish Sea,1,18,,water,,Irish Sea
+Irish Sea,3,18,,water,,Irish Sea
+Irish Sea,3,15,,water,,Irish Sea
+Irish Sea,1,15,,water,,Irish Sea
+English Channel,1,15,,water,,English Channel
+English Channel,1,15,,water,,English Channel
+English Channel,5,15,,water,,English Channel
+English Channel,5,13,,water,,English Channel
+English Channel,1,13,,water,,English Channel
+Western Mediterranean,1,5,,water,,W. Med
+Western Mediterranean,4,5,,water,,W. Med
+Western Mediterranean,4,2,,water,,W. Med
+Western Mediterranean,1,2,,water,,W. Med
+Eastern Mediterranean,14,1,,water,,Eastern Mediterranean
+Eastern Mediterranean,20,1,,water,,Eastern Mediterranean
+Eastern Mediterranean,20,0,,water,,Eastern Mediterranean
+Eastern Mediterranean,14,0,,water,,Eastern Mediterranean
+Ionian Sea,10,4,,water,,Ionian Sea
+Ionian Sea,13,4,,water,,Ionian Sea
+Ionian Sea,13,3,,water,,Ionian Sea
+Ionian Sea,14,3,,water,,Ionian Sea
+Ionian Sea,14,2,,water,,Ionian Sea
+Ionian Sea,14,1,,water,,Ionian Sea
+Ionian Sea,14,0,,water,,Ionian Sea
+Ionian Sea,13,0,,water,,Ionian Sea
+Ionian Sea,12,0,,water,,Ionian Sea
+Ionian Sea,11,0,,water,,Ionian Sea
+Ionian Sea,5,0,,water,,Ionian Sea
+Ionian Sea,5,1,,water,,Ionian Sea
+Ionian Sea,10,1,,water,,Ionian Sea
+Adriatic Sea,9,5,,water,,ADR
+Adriatic Sea,11,5,,water,,ADR
+Adriatic Sea,11,4,,water,,ADR
+Adriatic Sea,9,4,,water,,ADR
+Tyrrhenian Sea,4,4,,water,,TYS
+Tyrrhenian Sea,5,4,,water,,TYS
+Tyrrhenian Sea,5,3,,water,,TYS
+Tyrrhenian Sea,7,3,,water,,TYS
+Tyrrhenian Sea,7,1,,water,,TYS
+Tyrrhenian Sea,5,1,,water,,TYS
+Tyrrhenian Sea,5,2,,water,,TYS
+Tyrrhenian Sea,4,2,,water,,TYS
+Gulf of Lyon,4,7,,water,,LYO
+Gulf of Lyon,5,7,,water,,LYO
+Gulf of Lyon,5,4,,water,,LYO
+Gulf of Lyon,4,4,,water,,LYO
+Portugal,2,8,,land,1,POR
+Portugal,3,8,,land,1,POR
+Portugal,3,6,,land,1,POR
+Portugal,2,6,,land,1,POR
+Spain,3,9,,land,1,Spain
+Spain,4,9,,land,1,Spain
+Spain,4,5,,land,1,Spain
+Spain,3,5,,land,1,Spain
+Spain (south coast),3.5,6,,land,1,S
+Spain (north coast),3.5,8,,land,1,N
+Belgium,5,14,,land,1,BEL
+Belgium,6,14,,land,1,BEL
+Belgium,6,12,,land,1,BEL
+Belgium,5,12,,land,1,BEL
+Holland,6,14,,land,1,Holland
+Holland,8,14,,land,1,Holland
+Holland,8,13,,land,1,Holland
+Holland,6,13,,land,1,Holland
+Sweden,10,17,,land,1,Sweden
+Sweden,16,17,,land,1,Sweden
+Sweden,16,15,,land,1,Sweden
+Sweden,10,15,,land,1,Sweden
+Norway,9,18,,land,1,Norway
+Norway,20,18,,land,1,Norway
+Norway,20,17,,land,1,Norway
+Norway,9,17,,land,1,Norway
+Rumania,15,9,,land,1,Rumania
+Rumania,18,9,,land,1,Rumania
+Rumania,18,6,,land,1,Rumania
+Rumania,15,6,,land,1,Rumania
+Bulgaria,15,6,,land,1,Bulgaria
+Bulgaria,18,6,,land,1,Bulgaria
+Bulgaria,18,3,,land,1,Bulgaria
+Bulgaria,15,3,,land,1,Bulgaria
+Bulgaria (east coast),17,5,,land,1,E
+Bulgaria (south coast),16.5,3.5,,land,1,S
+Serbia,12,7,,land,1,Serbia
+Serbia,15,7,,land,1,Serbia
+Serbia,15,5,,land,1,Serbia
+Serbia,12,5,,land,1,Serbia
+Greece,13,5,,land,1,Greece
+Greece,15,5,,land,1,Greece
+Greece,15,3,,land,1,Greece
+Greece,13,3,,land,1,Greece
+Albania,11,5,,land,,Albania
+Albania,13,5,,land,,Albania
+Albania,13,4,,land,,Albania
+Albania,11,4,,land,,Albania
+North Sea,5,20,,water,,North Sea
+North Sea,5.5,20,,water,,North Sea
+North Sea,6,20,,water,,North Sea
+North Sea,6.5,20,,water,,North Sea
+North Sea,7,20,,water,,North Sea
+North Sea,7.5,20,,water,,North Sea
+North Sea,8,20,,water,,North Sea
+North Sea,9,20,,water,,North Sea
+North Sea,9,17,,water,,North Sea
+North Sea,8,17,,water,,North Sea
+North Sea,8,16,,water,,North Sea
+North Sea,9,16,,water,,North Sea
+North Sea,9,15,,water,,North Sea
+North Sea,8,15,,water,,North Sea
+North Sea,8,14,,water,,North Sea
+North Sea,5,14,,water,,North Sea
+North Sea,5,15,,water,,North Sea
+North Sea,6,15,,water,,North Sea
+North Sea,6,16,,water,,North Sea
+North Sea,5,16,,water,,North Sea
+Aegean Sea,14,3,,water,,AEG
+Aegean Sea,18,3,,water,,AEG
+Aegean Sea,18,2,,water,,AEG
+Aegean Sea,19,2,,water,,AEG
+Aegean Sea,19,1,,water,,AEG
+Aegean Sea,14,1,,water,,AEG
+Black Sea,18,9,,water,,Black Sea
+Black Sea,20,9,,water,,Black Sea
+Black Sea,20,5,,water,,Black Sea
+Black Sea,18,5,,water,,Black Sea
