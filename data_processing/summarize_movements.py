@@ -40,8 +40,8 @@ class LocationLookup:
             print("Missing '%s'" % location)
             return None
 
-def write_moves(counts, totals, locations, filename):
-    with open("%s.%s.csv" % (type, filename), 'w') as outfile:
+def write_moves(counts, totals, locations, filename, action_type):
+    with open("%s.%s.csv" % (filename, action_type), 'w') as outfile:
         out = csv.DictWriter(outfile, kFIELDNAMES)
         out.writeheader()
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
             if ii["order_type"] == "support":
                 supporting_totals[ii["country"]] += 1
                 supporting_totals[(ii["start_location"], ii["country"])] += 1
-                supports[(ii["start_location"], ii["country"], ii["support_country"], ii["support_start"])] += 1
+                supports[(ii["start_location"], ii["country"], ii["help_country"], ii["support_start"])] += 1
 
-    write_moves(counts, totals, locations, sys.argv[3])
-    write_moves(supports, supporting_totals, locations, sys.argv[3])
+    write_moves(counts, totals, locations, sys.argv[3], "move")
+    write_moves(supports, supporting_totals, locations, sys.argv[3], "sup")

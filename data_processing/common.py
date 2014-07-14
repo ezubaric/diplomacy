@@ -4,7 +4,14 @@ import operator
 from collections import defaultdict
 
 kCOUNTRIES = ["England", "Austria", "Germany", "France", "Russia", "Italy", "Turkey"]
-kADJECTIVES = ["English", "Austrian", "German", "French", "Russian", "Italian", "Turkish"]
+kADJECTIVES = {"English":"England",
+               "Austrian":"Austria",
+               "German": "Germany",
+               "French": "France",
+               "Russian": "Russia",
+               "Italian": "Italy",
+               "Turkish": "Turkey"}
+
 kVARIANT = re.compile("Variant: [a-zA-Z0-9 ]*")
 kGOODVARS = ["Standard", "Standard Gunboat"]
 
@@ -133,11 +140,11 @@ def generate_all_game_presses(cursor, game_name):
                               'ORDER BY gamename, sent;',
                               (game_name,)).fetchall()
 
-    
+
     for subject, body, sent in messages:
         if subject.count("Error Flag") > 0:
             continue # just a bounce message
-        
+
         if not body:
             body = ""
         try:
@@ -189,7 +196,7 @@ def generate_all_game_presses(cursor, game_name):
             sender = "unknown"
             receivers = re.split("to[\s+]",subject.lower())[1].upper() # lowercased to capture some cases
             # No Re/Rcpt messages in grey presses
-        
+
             msg = re.split("End[\s+]of[\s+]message.",body)[0]
             try:
                 msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
@@ -245,14 +252,14 @@ def generate_game_broadcast_presses(cursor, game_name):
 
         try:
             # This is more reliable than parsing from subject, as subject sometimes has 2  names, sometimes zero
-            milestone = body.split("Deadline: ")[1].split(" ")[0] 
+            milestone = body.split("Deadline: ")[1].split(" ")[0]
         except IndexError:
             try:
                 # Get from subject
                 milestone = subject.split("- ")[1].split(" ")[0]
             except:
                 continue # not actually a press message; invalid credential message
-    
+
         msg = re.split("End[\s+]of[\s+]message.",body)[0]
         try:
             msg = re.split("in[\s+]\'"+game_name+"\':",msg)[1] # The main message is of the format "... in '<game number>': <Message>\n\nEnd of message. ..."
@@ -280,4 +287,3 @@ def generate_game_broadcast_presses(cursor, game_name):
                 sender = "Re-unknown"
 
         yield sender, receivers, milestone, sent, msg
-

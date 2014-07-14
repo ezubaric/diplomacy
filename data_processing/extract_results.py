@@ -29,6 +29,7 @@ def parse_move(order, assumed_country):
     order = order.strip()
     if any(order.startswith(x) for x in kADJECTIVES):
         country, order = order.split(" ", 1)
+        country = kADJECTIVES[country]
     else:
 		country = assumed_country
 
@@ -46,7 +47,7 @@ def parse_move(order, assumed_country):
         if order.startswith("Army") or order.startswith("Fleet"):
             unit_type, order = order.split(" ", 1)
 
-        if " " in order:
+        if "hold" in order.lower():
             start, hold = order.split(" ", 1)
         else:
             start = order.strip()
@@ -56,6 +57,11 @@ def parse_move(order, assumed_country):
 
 
 def movement_tuples(message, row):
+    row["support_start"] = ""
+    row["convoy_start"] = ""
+    row["convoy_end"] = ""
+    row["support_end"] = ""
+
     for line in message.split("\\n"):
         # print("Processing: %s" % line)
         if line.strip().startswith("Ownership of supply centers:"):
@@ -65,7 +71,7 @@ def movement_tuples(message, row):
         if ":" in line:
             country, order = line.split(":", 1)
             if not country in kCOUNTRIES:
-                print("Skipping %s" % line)
+                # print("Skipping %s" % line)
                 continue
             row["country"] = country
 
@@ -75,9 +81,9 @@ def movement_tuples(message, row):
             else:
                 row["result"] = ""
 
-            if "SUPPORT" in order:
+            if " SUPPORT " in order:
                 row["order_type"] = "support"
-                unit, order = order.split("SUPPORT", 1)
+                unit, order = order.split(" SUPPORT ", 1)
                 unit = unit.strip()
 
                 assert unit.startswith("Fleet") or unit.startswith("Army"), "Bad start of order: %s" % order
@@ -87,10 +93,26 @@ def movement_tuples(message, row):
                 row["end_location"] = location
                 sup_country, sup_type, sup_start, sup_end = \
                   parse_move(order, country)
-                row["support_country"] = sup_country
-                row["support_type"] = sup_type
+                row["help_country"] = sup_country
+                row["help_type"] = sup_type
                 row["support_start"] = sup_start.replace(".", "").strip()
                 row["support_end"] = sup_end.replace(".", "").strip()
+            elif " CONVOY " in order:
+                row["order_type"] = "convoy"
+                unit, order = order.split(" CONVOY ", 1)
+                unit = unit.strip()
+
+                assert unit.startswith("Fleet") or unit.startswith("Army"), "Bad start of order: %s" % order
+                unit_type, location = unit.split(" ", 1)
+                row["unit_type"] = unit_type
+                row["start_location"] = location
+                row["end_location"] = location
+
+                transport_country, unit_type, start, end = parse_move(order, country)
+                row["convoy_start"] = start
+                row["convoy_end"] = end
+                row["help_type"] = unit_type
+                row["help_country"] = transport_country
             elif "->" or "HOLD" in order:
                 if "->" in order:
                     row["order_type"] = "move"
@@ -100,12 +122,10 @@ def movement_tuples(message, row):
                 row["unit_type"] = unit_type
                 row["start_location"] = start
                 row["end_location"] = end
-                row["support_country"] = ""
-                row["support_type"] = ""
+                row["help_country"] = ""
+                row["help_type"] = ""
                 row["support_start"] = ""
                 row["support_end"] = ""
-            else:
-                continue
             yield row
 
 
@@ -117,11 +137,11 @@ if __name__ == "__main__":
     print(variants)
 
     with open("movements.csv", 'w') as outfile:
-        out = csv.DictWriter(outfile, ["game", "time", "subject", "unit_type",
-                                       "start_location", "end_location",
-                                       "support_country", "order_type",
-                                       "country", "result", "support_type",
-                                       "support_start", "support_end"])
+        out = csv.DictWriter(outfile, ["game", "time", "subject",
+                                       "unit_type", "start_location", "end_location", "order_type",
+                                       "country", "result", "help_type", "help_country",
+                                       "support_start", "support_end", "convoy_start", "convoy_end"])
+
         out.writeheader()
         moves = movement_results_bodies(conn)
         moves = sorted(moves, key=lambda x: (x["game"],
@@ -130,7 +150,7 @@ if __name__ == "__main__":
             variant = variants[mm["game"]]
             if not variant in kGOODVARS:
                 continue
-            print("VAR: %s" % variants[mm["game"]])
+            # print("VAR: %s" % variants[mm["game"]])
             base_row = {}
             base_row["game"] = mm["game"]
             base_row["time"] = mm["time"]
