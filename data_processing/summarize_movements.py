@@ -53,6 +53,7 @@ def write_moves(counts, totals, locations, filename, action_type):
               (ss, cc, str((ss, cc, tt, ee)))
             row["start_name"] = ss
             row["end_name"] = ee
+            row["target"] = tt
             row["country"] = cc
             row["count"] = counts[(ss, cc, tt, ee)]
             row["start_freq"] = float(counts[(ss, cc, tt, ee)]) / float(totals[(ss, cc)])
