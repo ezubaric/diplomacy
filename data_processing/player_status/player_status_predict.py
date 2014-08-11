@@ -16,7 +16,7 @@ def player_status_train_test(player_statuses):
 
     # filter out short instances
     print("Before filtering: n_instances=", len(player_statuses))
-    THRESHOLD = 10  # at least 10 sent and 10 received messages
+    THRESHOLD = 5  # at least 5 sent and 5 received messages
     player_statuses = [p for p in player_statuses
                     if sum(msg['direction'] == 'from'
                            for msg in p['talk']) >= THRESHOLD

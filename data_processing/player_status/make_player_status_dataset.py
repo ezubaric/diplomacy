@@ -6,11 +6,14 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 
 
-yearly_statuses = json.load(open("../data_processing/yearly_statuses.json"))
+yearly_statuses = json.load(open("yearly_statuses.json"))
 
 def talk_of_country_in_year(talk, country, year):
     result = []
     for msg in talk:
+        msg_year = int(msg['milestone'][1:5])
+        if msg_year != year:
+            continue
         if msg['sender'] == country:
             msg['direction'] = 'from'
             result.append(msg)
@@ -22,7 +25,7 @@ def talk_of_country_in_year(talk, country, year):
 
 instances = []
 for game_name, statuses in yearly_statuses.items():
-    with open("../press_data/{}".format(game_name), "rb") as f:
+    with open("../../press_data/{}".format(game_name), "rb") as f:
         talk = list(unicodecsv.DictReader(f))
 
 
@@ -60,10 +63,12 @@ print("Avg. messages: {:.2f} ({:.2f} from, {:.2f} to)".format(
 print("Min messages: {:.2f} ({:.2f} from, {:.2f} to)".format(
     np.min(lens), np.min(lens_from), np.min(lens_to)))
 
-bins = range(0, 100, 10) + range(100, 1000, 100) + [1500]
-plt.hist(lens_from, normed=False, alpha=0.5, bins=bins, label="from")
-plt.hist(lens_to, normed=False, alpha=0.5, bins=bins, label="to")
-plt.ylabel("Number of training instances")
+bins = np.arange(0, 250, 10)
+plt.figure(figsize=(8, 3))
+pal = sns.color_palette()
+plt.hist(lens_from, normed=False, alpha=0.33, bins=bins, label="from")
+plt.hist(lens_to, normed=False, alpha=0.33, bins=bins, label="to")
+plt.ylabel("Number of player-player-year instances")
 plt.xlabel("Number of messages")
 plt.legend()
 plt.title("Message count distribution in yearly player evolution dataset")
