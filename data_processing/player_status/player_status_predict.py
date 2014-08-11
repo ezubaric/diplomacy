@@ -4,6 +4,22 @@ import numpy as np
 
 from sklearn.utils import shuffle
 
+def _clean_message(msg):
+    """Clean up a message"""
+    return "\n".join(line for line in msg.split("\n")
+                     if not line.startswith(">"))
+
+
+def _clean(player_status):
+    """Clean up all messages in a player status instance"""
+    cleaned_talk = []
+    for msg in player_status['talk']:
+        msg['message'] = _clean_message(msg['message'])
+        cleaned_talk.append(msg)
+    player_status['talk'] = cleaned_talk
+    return player_status
+
+
 def player_status_train_test(player_statuses):
     """Make a train-test split"""
 
@@ -23,8 +39,10 @@ def player_status_train_test(player_statuses):
                     and sum(msg['direction'] == 'to'
                             for msg in p['talk']) >= THRESHOLD]
     print("After filtering: n_instances=", len(player_statuses))
-    train_statuses = [p for p in player_statuses if p['game'] not in test_games]
-    test_statuses = [p for p in player_statuses if p['game'] in test_games]
+    train_statuses = [_clean(p) for p in player_statuses
+                      if p['game'] not in test_games]
+    test_statuses = [_clean(p) for p in player_statuses
+                     if p['game'] in test_games]
     print("Train: {}, test: {}".format(len(train_statuses), len(test_statuses)))
     print("Test label distribution: ",
           Counter(row['status'] for row in test_statuses))
