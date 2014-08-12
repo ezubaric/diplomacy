@@ -9,6 +9,7 @@ import re
 from glob import glob
 import csv
 import unicodecsv
+import sys
 
 # get list of territory abbreviations from Jordan's file
 terr_lower = set([row['abbreviation'].split()[0]
@@ -17,7 +18,7 @@ terr_lower = set([row['abbreviation'].split()[0]
 # generate uppercase and titlecase variants: aaa -> (aaa, AAA, Aaa)
 territory = list(terr_lower) + [t.upper() for t in terr_lower] + \
         [t[0].upper() + t[1:] for t in terr_lower]
-    
+
 # turn into or-regex plus optional "sc" (I don't know what it means)
 territory = r"(?:{})(?:\s*\((?:sc|Sc|SC)\))?".format("|".join(territory))
 
@@ -44,10 +45,10 @@ order_re = re.compile(r"""(
 # Count messages
 
 n_with_order, n_with_supp = 0, 0
-for f in glob("../press_data/*"):
+for f in glob(sys.argv[1] + "/*"):
     rdr = unicodecsv.reader(open(f))
     rdr.next()  # discard header
-    for fro, to, mile, _, msg in rdr:
+    for _, _, fro, to, mile, _, msg in rdr:
         if fro not in ("M", "unknown") and to != "M" and not mile.endswith("X"):
             has_match = False
             has_supp = False

@@ -1,4 +1,6 @@
 from __future__ import print_function
+import sys
+
 import json
 import unicodecsv
 import numpy as np
@@ -11,21 +13,24 @@ yearly_statuses = json.load(open("yearly_statuses.json"))
 def talk_of_country_in_year(talk, country, year):
     result = []
     for msg in talk:
-        msg_year = int(msg['milestone'][1:5])
+        msg_year = int(msg['phase'][1:5])
         if msg_year != year:
             continue
-        if msg['sender'] == country:
+        if msg['apparent_sender'] == country:
             msg['direction'] = 'from'
             result.append(msg)
-        elif country in msg['receivers'] or msg['receivers'] == 'all':
+        elif (country in msg['apparent_receivers'] or
+              msg['apparent_receivers'] == 'all'):
             msg['direction'] = 'to'
             result.append(msg)
     return result
 
+paths = {game_name: sys.argv[1] + "/usak-{}.press".format(game_name)
+         for game_name in yearly_statuses.keys()}
 
 instances = []
 for game_name, statuses in yearly_statuses.items():
-    with open("../../press_data/{}".format(game_name), "rb") as f:
+    with open(paths[game_name], "rb") as f:
         talk = list(unicodecsv.DictReader(f))
 
 
