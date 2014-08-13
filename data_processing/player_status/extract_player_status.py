@@ -17,7 +17,7 @@ conn = sqlite3.connect("../data/usakpress.db")
 cur = conn.cursor()
 
 
-phase_re = r'[SF]\d{4}[MRB]X?'
+phase_re = r'[SF]\d{4}[MRBA]X?'  # move, retreat, build, adjust
 
 
 game_statuses = {}
