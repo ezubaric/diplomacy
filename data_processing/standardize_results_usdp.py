@@ -6,7 +6,7 @@ import re
 
 import unicodecsv
 
-phase_re = re.compile(ur'[SFWAPOÞB]\d{3,4}[MRBA]X?')
+phase_re = re.compile(ur'[SFWAPOÞB]\d{1,4}[MRBA]X?')
 # move, retreat, build, adjust
 # spring, fall, winter(?), anno(?), strange variations?
 
@@ -19,11 +19,12 @@ if __name__ == '__main__':
             game_name = game_name[:-len(".results")]
         with open(fname) as f:
             contents = f.read()
-        msgs = contents.split("From dpjudge@diplom.org")[1:]
+        msgs = contents.split("From dpjudge@")[1:]  # can come from various
         last_phase = None
         rows = []
         for m in msgs:
             timestamp, subject, content = m.split("\n", 2)
+            judge_email_domain, timestamp = timestamp.split(None, 1)
             if subject.startswith("Subject: "):
                 subject = subject[len("Subject: "):]
             phase = phase_re.search(subject)

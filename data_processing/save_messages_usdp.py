@@ -25,7 +25,7 @@ def _process_sig(signature):
     recipients = "".join([_country_code(r) for r in recipients])
     return sender, recipients
 
-phase_re = ur'[SFWAPOÞB]\d{3,4}[MRBA]X?'
+phase_re = ur'[SFWAPOÞB]\d{1,4}[MRBA]X?'
 # move, retreat, build, adjust
 # spring, fall, winter(?), anno(?), strange variations?
 
