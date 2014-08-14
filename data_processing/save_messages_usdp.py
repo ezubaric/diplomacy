@@ -24,7 +24,8 @@ def _process_sig(signature):
     recipients = "".join([_country_code(r) for r in recipients])
     return sender, recipients
 
-phase_re = r'[SFW]\d{4}[MRBA]X?'  # move, retreat, build, adjust
+phase_re = r'[SFWA]\d{4}[MRBA]X?'  # move, retreat, build, adjust;
+                                   # spring, fall, winter(?), anno(?)
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:

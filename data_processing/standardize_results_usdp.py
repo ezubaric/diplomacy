@@ -5,7 +5,8 @@ import re
 
 import unicodecsv
 
-phase_re = re.compile(r'[SFW]\d{4}[MRBA]X?')  # move, retreat, build, adjust
+phase_re = re.compile(r'[SFWA]\d{4}[MRBA]X?')  # move, retreat, build, adjust
+                                               # spring, fall, winter(?), anno(?)
 PATH = "../data_standardized/"
 
 if __name__ == '__main__':
