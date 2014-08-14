@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 from os.path import basename
 import unicodecsv
+import re
 
 
 PATH = "../data_standardized"
@@ -23,6 +24,7 @@ def _process_sig(signature):
     recipients = "".join([_country_code(r) for r in recipients])
     return sender, recipients
 
+phase_re = r'[SFW]\d{4}[MRBA]X?'  # move, retreat, build, adjust
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
@@ -31,13 +33,15 @@ if __name__ == "__main__":
             game_name = game_name[:-len(".press")]
         with open(fname, "rU") as f:
             contents = f.read()
-        presses = contents.split("\n:: ")[1:]
+        presses = re.split(":: ({}|\?\?\?\?\?)".format(phase_re), contents)[1:]
         last_phase = "S1901M"
         processed_presses = []
-        for press in presses:
+        for ii in range(0, len(presses), 2):
+            phase = presses[ii]
+            press = presses[ii + 1]
             tagline, subject, press = press.split("\n", 2)
-            phase, signature = tagline.split(None, 1)
-            signature = signature.split(" | ")
+            #phase, signature = tagline.split(None, 1)
+            signature = tagline.split(" | ")
             if len(signature) == 2:
                 actual_sig, apparent_sig = signature
                 actual_sender, actual_recipients = _process_sig(actual_sig)
