@@ -1,3 +1,4 @@
+#encoding: utf8
 from __future__ import print_function
 from os.path import basename
 import sys
@@ -5,8 +6,10 @@ import re
 
 import unicodecsv
 
-phase_re = re.compile(r'[SFWA]\d{4}[MRBA]X?')  # move, retreat, build, adjust
-                                               # spring, fall, winter(?), anno(?)
+phase_re = re.compile(ur'[SFWAPOÞ]\d{4}[MRBA]X?')
+# move, retreat, build, adjust
+# spring, fall, winter(?), anno(?), strange variations?
+
 PATH = "../data_standardized/"
 
 if __name__ == '__main__':

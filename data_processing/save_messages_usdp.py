@@ -1,3 +1,4 @@
+# encoding: utf8
 from __future__ import print_function
 import sys
 from os.path import basename
@@ -24,8 +25,9 @@ def _process_sig(signature):
     recipients = "".join([_country_code(r) for r in recipients])
     return sender, recipients
 
-phase_re = r'[SFWA]\d{4}[MRBA]X?'  # move, retreat, build, adjust;
-                                   # spring, fall, winter(?), anno(?)
+phase_re = ur'[SFWAPOÞ]\d{4}[MRBA]X?'
+# move, retreat, build, adjust
+# spring, fall, winter(?), anno(?), strange variations?
 
 if __name__ == "__main__":
     for fname in sys.argv[1:]:
@@ -34,7 +36,7 @@ if __name__ == "__main__":
             game_name = game_name[:-len(".press")]
         with open(fname, "rU") as f:
             contents = f.read()
-        presses = re.split(":: ({}|\?\?\?\?\?)".format(phase_re), contents)[1:]
+        presses = re.split(u":: ({}|\?\?\?\?\?)".format(phase_re), contents)[1:]
         last_phase = "S1901M"
         processed_presses = []
         for ii in range(0, len(presses), 2):
