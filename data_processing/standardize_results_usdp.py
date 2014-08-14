@@ -19,6 +19,7 @@ if __name__ == '__main__':
         with open(PATH + "usdp-{}.results".format(game_name), "wb") as f:
             writer = unicodecsv.writer(f, encoding="utf8", lineterminator="\n")
             writer.writerow(("phase", "subject", "content"))
+            last_phase = 'S1901M'  # all games start here
             for m in msgs:
                 timestamp, subject, content = m.split("\n", 2)
                 if subject.startswith("Subject: "):
@@ -26,11 +27,12 @@ if __name__ == '__main__':
                 phase = phase_re.search(subject)
                 phase = phase.group(0) if phase else None
                 if not phase:
-                    if 'starting' in subject:
-                        phase = 'S1901M'  # all games start at S1901M
+                    if 'starting' in subject or 'complete' in subject:
+                        phase = last_phase
                     else:
                         raise ValueError('phase missing from subject '
                                          '{}'.format(subject))
+                last_phase = phase
                 writer.writerow((phase,
                                  subject,
                                  "{}\n{}".format(timestamp.strip(), content)))
