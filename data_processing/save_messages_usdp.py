@@ -25,7 +25,7 @@ def _process_sig(signature):
     recipients = "".join([_country_code(r) for r in recipients])
     return sender, recipients
 
-phase_re = ur'[SFWAPOÞ]\d{4}[MRBA]X?'
+phase_re = ur'[SFWAPOÞB]\d{3,4}[MRBA]X?'
 # move, retreat, build, adjust
 # spring, fall, winter(?), anno(?), strange variations?
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         with open(fname, "rU") as f:
             contents = f.read()
         presses = re.split(u":: ({}|\?\?\?\?\?)".format(phase_re), contents)[1:]
-        last_phase = "S1901M"
+        last_phase = None
         processed_presses = []
         for ii in range(0, len(presses), 2):
             phase = presses[ii]
@@ -70,6 +70,27 @@ if __name__ == "__main__":
                                       press
                                      ))
         fname = PATH + "/usdp-{}.press".format(game_name)
+
+        # get first defined phase
+        for _, _, _, _, first_phase, _, _ in processed_presses:
+            if first_phase:
+                break
+        # replace first undefined phases by first_phase
+        processed_presses = [(actual_sender,
+                              actual_recipients,
+                              apparent_sender,
+                              apparent_recipients,
+                              first_phase if not phase else phase,
+                              None,
+                              press) for (
+                                  actual_sender,
+                                  actual_recipients,
+                                  apparent_sender,
+                                  apparent_recipients,
+                                  phase,
+                                  _,
+                                  press) in processed_presses]
+
         with open(fname, "wb") as f:
             writer = unicodecsv.writer(f, encoding="utf8", lineterminator="\n")
             writer.writerow(("actual_sender",

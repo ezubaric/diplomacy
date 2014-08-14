@@ -6,7 +6,7 @@ import re
 
 import unicodecsv
 
-phase_re = re.compile(ur'[SFWAPOÞ]\d{4}[MRBA]X?')
+phase_re = re.compile(ur'[SFWAPOÞB]\d{3,4}[MRBA]X?')
 # move, retreat, build, adjust
 # spring, fall, winter(?), anno(?), strange variations?
 
@@ -20,23 +20,34 @@ if __name__ == '__main__':
         with open(fname) as f:
             contents = f.read()
         msgs = contents.split("From dpjudge@diplom.org")[1:]
+        last_phase = None
+        rows = []
+        for m in msgs:
+            timestamp, subject, content = m.split("\n", 2)
+            if subject.startswith("Subject: "):
+                subject = subject[len("Subject: "):]
+            phase = phase_re.search(subject)
+            phase = phase.group(0) if phase else None
+            if not phase:
+                if 'starting' in subject or 'complete' in subject:
+                    phase = last_phase
+                else:
+                    raise ValueError('phase missing from subject '
+                                        '{}'.format(subject))
+            last_phase = phase
+            rows.append((phase, subject,
+                            "{}\n{}".format(timestamp.strip(), content)))
+
+        # get first non-null phase name
+        for first_phase, _, _ in rows:
+            if first_phase:
+                break
+        #replace first undefined phases by first_phase
+        rows = [(first_phase if not phase else phase,
+                 subject,
+                 content) for (phase, subject, content) in rows]
+        # write the output file
         with open(PATH + "usdp-{}.results".format(game_name), "wb") as f:
             writer = unicodecsv.writer(f, encoding="utf8", lineterminator="\n")
             writer.writerow(("phase", "subject", "content"))
-            last_phase = 'S1901M'  # all games start here
-            for m in msgs:
-                timestamp, subject, content = m.split("\n", 2)
-                if subject.startswith("Subject: "):
-                    subject = subject[len("Subject: "):]
-                phase = phase_re.search(subject)
-                phase = phase.group(0) if phase else None
-                if not phase:
-                    if 'starting' in subject or 'complete' in subject:
-                        phase = last_phase
-                    else:
-                        raise ValueError('phase missing from subject '
-                                         '{}'.format(subject))
-                last_phase = phase
-                writer.writerow((phase,
-                                 subject,
-                                 "{}\n{}".format(timestamp.strip(), content)))
+            writer.writerows(rows)
