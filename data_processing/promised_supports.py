@@ -1,11 +1,12 @@
 # Get promised supports
 
 from __future__ import print_function
+from os.path import basename
+import sys
 import csv
 import unicodecsv
 from glob import glob
 import re
-from os.path import basename
 from collections import Counter, defaultdict
 
 try:
@@ -20,10 +21,10 @@ full_country = {country[0]: country for country in kCOUNTRIES}
 
 promised_supports = []
 
-for f in glob("../press_data/*"):
+for f in glob(sys.argv[1] + "/*"):
     rdr = unicodecsv.reader(open(f))
     rdr.next()  # discard header
-    for fro, to, mile, _, msg in rdr:
+    for _, _, fro, to, mile, _, msg in rdr:
         if fro not in full_country.keys() or to == "M" or mile.endswith("X"):
             # discard anonymous presses, presses to master and post-game msgs
             continue
@@ -37,7 +38,8 @@ for f in glob("../press_data/*"):
                     benefitting_country = m.groups()[0]
                     promises_in_message.append((line, benefitting_country))
         if promises_in_message:
-            promised_supports.append((basename(f), mile, fro, to,
+            game = basename(f).split("-", 1)[1].split(".")[0]
+            promised_supports.append((game, mile, fro, to,
                                       promises_in_message))
 
 print("n. messages with promises: ", len(promised_supports))
@@ -110,4 +112,4 @@ for game, mile, fro, to, promises in promised_supports:
             lies.append(tup)
 
 print("Promises kept: ", len(truths))
-print("Promises broken: ", len(lies)) 
+print("Promises broken: ", len(lies))
