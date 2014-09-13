@@ -13,13 +13,13 @@ good_games = ['ap000017', 'ap000018', 'betrayorbust', 'cavalry', 'malafide',
               'ripallen', 'serendipity', 'showcase01', 'stormbluff', 'xp000030',
               'xp000031', 'xp000032']
 
-conn = sqlite3.connect("../data/usakpress.db")
+conn = sqlite3.connect("./data/usakpress.db")
 cur = conn.cursor()
 
 
 phase_re = r'[SF]\d{4}[MRBA]X?'  # move, retreat, build, adjust
 
-PATH = "../data_standardized/"
+PATH = "./data_standardized/"
 
 game_statuses = {}
 for g in good_games:

@@ -12,3 +12,8 @@ p2pmessages:
 	mkdir -p press_data
 	python data_processing/save_messages.py data/usakpress.db
 	python data_processing/deduplicate.py press_data
+
+standardize_results:
+	mkdir -p data_standardized
+	python data_processing/standardize_results_usak.py
+	python data_processing/standardize_results_usdp.py
