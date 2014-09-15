@@ -60,7 +60,8 @@ def writeSC(phase):
         existingSC.pop(oldloc)
     existingSC.append(newloc)
     supplycenter[country] = existingSC"""
-    
+
+extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA"}
 
 foldername = "./data_standardized/"
 gamestatefolder = "./gamestate/"
@@ -124,7 +125,7 @@ for fname in listdir(foldername):
                         updateUnit(country, oldlocation, newlocation,unit)
                     
                     # for an army passing through the sea using a fleet
-                    if line.count("->") > 1:
+                    elif line.count("->") > 1:
                         l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
@@ -134,6 +135,22 @@ for fname in listdir(foldername):
                         l.reverse()
                         newlocation = ' '.join(l[secondarrow:])
                         updateUnit(country, oldlocation, newlocation, unit)
+
+                    # removes destroyed units
+                    elif line.count("no valid retreats") > 0:
+                        l = line.split()
+                        country = ''
+                        for c in countries:
+                            if c.startswith(l[1][0:2]):
+                                country = c
+                                break
+                        if country == '':
+                            country = extraCountryMapping[l[1]]
+                        unit = l[2].capitalize()
+                        location = ' '.join(l[l.index("in")+1:l.index("with")])
+                        if location.startswith("the "):
+                            location = location[4:]
+                        removeUnit(country, location, unit)
                 writeState(r[0])
 
             # Results for Build phase
