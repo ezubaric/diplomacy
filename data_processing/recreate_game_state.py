@@ -15,6 +15,13 @@ def updateUnit(country, oldloc, newloc, unit):
     existingPositions[newloc] = existingUnit
     countries[country] = existingPositions
 
+def removeUnit(country, location, unit):
+    existingPositions = countries.get(country,{})
+    existingUnit = existingPositions.get(location,[])
+    existingUnit.pop(unit)
+    existingPositions[location] = existingUnit
+    countries[country] = existingPositions    
+
 # write all player's units and locations
 def writeState(phase):
     for country in countries:
@@ -127,13 +134,14 @@ for fname in listdir(foldername):
             # Results for Retreat phase
             elif r[1].endswith("R"):
                 lines = r[2].split("\n")
-                if line.count("->") == 1:
-                    l = line.split()
-                    country = l[0][:-1]
-                    unit = l[1]
-                    oldlocation = ' '.join(l[2:l.index("->")])
-                    newlocation = ' '.join(l[l.index("->")+1:])
-                    updateUnit(country, oldlocation, newlocation,unit)
+                for line in lines:
+                    if line.count("->") == 1 and line.count("destroyed")==0:
+                        l = line.split()
+                        country = l[0][:-1]
+                        unit = l[1]
+                        oldlocation = ' '.join(l[2:l.index("->")])
+                        newlocation = ' '.join(l[l.index("->")+1:])
+                        updateUnit(country, oldlocation, newlocation,unit)
                 writeState(r[0])
     except UnicodeDecodeError:
         print gamename
