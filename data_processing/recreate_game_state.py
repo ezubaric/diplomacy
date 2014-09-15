@@ -13,11 +13,15 @@ def addUnit(country, location, unit):
 # update the position of a player's unit
 def updateUnit(country, oldloc, newloc, unit):
     existingPositions = countries.get(country,{})
-    if oldloc != "":
-        existingUnit = existingPositions.get(oldloc,[])
-        if unit in existingUnit:
-            existingUnit.remove(unit)
+    
+    existingUnit = existingPositions.get(oldloc)
+    if unit in existingUnit:
+        existingUnit.remove(unit)
+    if existingUnit != []:
         existingPositions[oldloc] = existingUnit
+    else:
+        existingPositions.pop(oldloc)
+    
     existingUnit = existingPositions.get(newloc,[])
     existingUnit.append(unit)
     existingPositions[newloc] = existingUnit
@@ -26,9 +30,12 @@ def updateUnit(country, oldloc, newloc, unit):
 # removes player's unit
 def removeUnit(country, location, unit):
     existingPositions = countries.get(country,{})
-    existingUnit = existingPositions.get(location,[])
+    existingUnit = existingPositions.get(location)
     existingUnit.remove(unit)
-    existingPositions[location] = existingUnit
+    if existingUnit != []:
+        existingPositions[location] = existingUnit
+    else:
+        existingPositions.pop(location)
     countries[country] = existingPositions    
 
 # write all player's units and locations
@@ -61,6 +68,7 @@ gamestatefolder = "./gamestate/"
 for fname in listdir(foldername):
     gamename = basename(fname)
     gamename = gamename[:-len(".results")]
+    print "Processing ", gamename
     reader = unicodecsv.reader(open(foldername + fname,"rb"), encoding="utf8", lineterminator="\n")
     gswriter = unicodecsv.writer(open(gamestatefolder + gamename + ".gamestate", "wb"), encoding="utf8", lineterminator="\n")
     #scwriter = unicodecsv.writer(open(gamestatefolder + gamename + ".supplycenter", "wb"), encoding="utf8", lineterminator="\n")
@@ -103,7 +111,7 @@ for fname in listdir(foldername):
                     if line.count("CONVOY") > 0 or line.count("SUPPORT") > 0 or line.count("HOLD") > 0:
                         continue
                     
-                    if line.count("cut") > 0 or line.count("void") > 0 or line.count("dislodged") > 0 or line.count("bounce") > 0:
+                    if line.count("cut") > 0 or line.count("void") > 0 or line.count("dislodged") > 0 or line.count("bounce") > 0 or line.count("no convoy") > 0:
                         continue
 
                     # record movement for an army/fleet
@@ -116,13 +124,15 @@ for fname in listdir(foldername):
                         updateUnit(country, oldlocation, newlocation,unit)
                     
                     # for an army passing through the sea using a fleet
-                    if line.count("->") == 2:
+                    if line.count("->") > 1:
                         l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
-                        secondarrow = l.index("->") + l[l.index("->")+1:].index("->") + 1
-                        newlocation = ' '.join(l[secondarrow+1:])
+                        l.reverse()
+                        secondarrow = len(l)-l.index("->")
+                        l.reverse()
+                        newlocation = ' '.join(l[secondarrow:])
                         updateUnit(country, oldlocation, newlocation, unit)
                 writeState(r[0])
 
@@ -147,7 +157,7 @@ for fname in listdir(foldername):
                         country = l[0][:-1]
                         unit = l[3].capitalize()
                         location = (' '.join(l[5:]))
-                        updateUnit(country, '', location, unit)
+                        addUnit(country, location, unit)
                     elif line.count("Removes") > 0:
                         l = line[:-1].split()
                         country = l[0][:-1]
