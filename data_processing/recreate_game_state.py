@@ -16,7 +16,7 @@ def updateUnit(country, oldloc, newloc, unit):
     if oldloc != "":
         existingUnit = existingPositions.get(oldloc,[])
         if unit in existingUnit:
-            existingUnit.pop(unit)
+            existingUnit.remove(unit)
         existingPositions[oldloc] = existingUnit
     existingUnit = existingPositions.get(newloc,[])
     existingUnit.append(unit)
@@ -27,7 +27,7 @@ def updateUnit(country, oldloc, newloc, unit):
 def removeUnit(country, location, unit):
     existingPositions = countries.get(country,{})
     existingUnit = existingPositions.get(location,[])
-    existingUnit.pop(unit)
+    existingUnit.remove(unit)
     existingPositions[location] = existingUnit
     countries[country] = existingPositions    
 
@@ -36,8 +36,9 @@ def writeState(phase):
     for country in countries:
         pos = countries.get(country)
         for location in pos:
-            for u in unit:
-                gswriter.writerow((phase,country,location,u))
+            units = pos[location]
+            for u in units:
+                gswriter.writerow((phase,country,u,location))
 
 # write all player's supply centers
 def writeSC(phase):
@@ -59,6 +60,7 @@ gamestatefolder = "./gamestate/"
 
 for fname in listdir(foldername):
     gamename = basename(fname)
+    gamename = gamename[:-len(".results")]
     reader = unicodecsv.reader(open(foldername + fname,"rb"), encoding="utf8", lineterminator="\n")
     gswriter = unicodecsv.writer(open(gamestatefolder + gamename + ".gamestate", "wb"), encoding="utf8", lineterminator="\n")
     #scwriter = unicodecsv.writer(open(gamestatefolder + gamename + ".supplycenter", "wb"), encoding="utf8", lineterminator="\n")
@@ -77,7 +79,7 @@ for fname in listdir(foldername):
                 l = line[:-1].split()
                 country = l[0][:-1]
                 unit = l[1]
-                location = l[2]
+                location = ' '.join(l[2:])
                 addUnit(country, location, unit)
                 #updateSC(country, "", location)
                 """existingSC = supplycenter.get(country,[])
@@ -85,7 +87,7 @@ for fname in listdir(foldername):
                 supplycenter[country] = existingSC"""
         
         # save initial state
-        gswriter.writerow(("phase","Country","Location","Type"))
+        gswriter.writerow(("phase","Country","Type","Location"))
         writeState("Beginning")
         
         #scwriter.writerow(("phase","Country","Location"))
@@ -106,7 +108,7 @@ for fname in listdir(foldername):
 
                     # record movement for an army/fleet
                     if line.count("->") == 1:
-                        l = line.split()
+                        l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
@@ -115,11 +117,11 @@ for fname in listdir(foldername):
                     
                     # for an army passing through the sea using a fleet
                     if line.count("->") == 2:
-                        l = line.split()
+                        l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
-                        secondarrow = l.index("->") + l[l.index("->")+1:].index("->")
+                        secondarrow = l.index("->") + l[l.index("->")+1:].index("->") + 1
                         newlocation = ' '.join(l[secondarrow+1:])
                         updateUnit(country, oldlocation, newlocation, unit)
                 writeState(r[0])
@@ -134,7 +136,7 @@ for fname in listdir(foldername):
                         unit = l[3].capitalize()
                         location = (' '.join(l[5:]))
                         addUnit(country, location, unit)
-                writerState(r[0])
+                writeState(r[0])
 
             # Results for Adjustment phase
             elif r[1].endswith("A"):
@@ -151,8 +153,11 @@ for fname in listdir(foldername):
                         country = l[0][:-1]
                         unit = l[3].capitalize()
                         location = (' '.join(l[5:]))
+                        if location.startswith("the "):
+                            location = location[4:]
                         removeUnit(country, location, unit)
-            
+                writeState(r[0])
+
             # Results for Retreat phase
             elif r[1].endswith("R"):
                 lines = r[2].split("\n")
@@ -164,8 +169,8 @@ for fname in listdir(foldername):
                         location = ' '.join(l[2:l.index("->")])
                         removeUnit(country, location, unit)
                     elif line.count("DISBAND"):
-                        l = line.split()
-                        country = l[0]
+                        l = line[:-1].split()
+                        country = l[0][:-1]
                         unit = l[1]
                         location = ' '.join(l[2:l.index("DISBAND")])
                         removeUnit(country, location, unit)
