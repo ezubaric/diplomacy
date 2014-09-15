@@ -33,6 +33,8 @@ def get_statuses(results_fname):
                     continue
                 ownership = {}
                 for line in status:
+                    if line.startswith("SHOW"):
+                        continue
                     country = line.split()[0]
                     country = country[:-1]  # strip colon
                     supplies, units, _ = re.findall(r"\d+", line)
