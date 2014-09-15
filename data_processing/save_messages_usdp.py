@@ -6,7 +6,7 @@ import unicodecsv
 import re
 
 
-PATH = "../data_standardized"
+PATH = "./data_standardized/"
 
 
 def _country_code(country):
