@@ -14,6 +14,9 @@ def get_statuses(results_fname):
             phase = row['phase']
             subject = row['subject']
             content = row['content']
+            if not phase:
+                # XXX investigate empty phases
+                continue
             years.add(int(re.findall(r"\d+", phase)[0]))
             if "Ownership of supply centers" in content:
                 if (subject.startswith("Re:") or subject.startswith("Rcpt:")
