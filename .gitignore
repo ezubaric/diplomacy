@@ -1,6 +1,7 @@
 data/
 press_data/
 data_standardized/
+gamestate/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
