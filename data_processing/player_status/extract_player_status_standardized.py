@@ -50,22 +50,23 @@ def get_statuses(results_fname):
 
 
 if __name__ == '__main__':
-    # PATH = "/local/diplomacy/code/diplomacy/data_standardized/"
-    PATH = "/Users/mbk-59-41/diplomacy/code/diplomacy/data_standardized/"
+    PATH = "/local/diplomacy/code/diplomacy/data_standardized/"
+    # PATH = "/Users/mbk-59-41/diplomacy/code/diplomacy/data_standardized/"
     game_statuses = {}
-    old_statuses = json.load(open("player_status/yearly_statuses.json", "rb"))
+    # old_statuses = json.load(open("player_status/yearly_statuses.json", "rb"))
     for game in fileinput.input():
         game = game.strip()
         statuses = get_statuses(PATH + game + ".results")
-        raw_name = game.split("-", 1)[1]
-        for key in statuses:
-            for country in statuses[key]:
-                a = statuses[key][country]
-                b = old_statuses[raw_name][key][country]
-                if a != b:
-                    raise ValueError("Disagreement in game {} "
-                                     "for phase {} and country {}: "
-                                     "{} != {}".format(game, key, country, a, b))
+        # temporary check for consistency with old method
+        # raw_name = game.split("-", 1)[1]
+        # for key in statuses:
+        #     for country in statuses[key]:
+        #         a = statuses[key][country]
+        #         b = old_statuses[raw_name][key][country]
+        #         if a != b:
+        #             raise ValueError("Disagreement in game {} "
+        #                              "for phase {} and country {}: "
+        #                              "{} != {}".format(game, key, country, a, b))
         game_statuses[game] = statuses
     with open("game_statuses.json", "wb") as f:
         json.dump(game_statuses, f)
