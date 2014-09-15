@@ -151,13 +151,19 @@ for fname in listdir(foldername):
                 lines = r[2].split("\n")
                 for line in lines:
                     if line.count("destroyed") > 0:
-                        l = line.split()
+                        l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
                         location = ' '.join(l[2:l.index("->")])
                         removeUnit(country, location, unit)
-                    elif line.count("->") == 1:
+                    elif line.count("DISBAND"):
                         l = line.split()
+                        country = l[0]
+                        unit = l[1]
+                        location = ' '.join(l[2:l.index("DISBAND")])
+                        removeUnit(country, location, unit)
+                    elif line.count("->") == 1:
+                        l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
