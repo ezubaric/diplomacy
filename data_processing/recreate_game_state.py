@@ -1,6 +1,7 @@
 from os import listdir
 from os.path import basename
 import unicodecsv
+import re
 
 # add player's unit
 def addUnit(country, location, unit):
@@ -15,8 +16,13 @@ def updateUnit(country, oldloc, newloc, unit):
     existingPositions = countries.get(country,{})
     
     existingUnit = existingPositions.get(oldloc)
-    if unit in existingUnit:
-        existingUnit.remove(unit)
+
+    # The game "usdp-sagard1" is missing a build command, which results in an error
+    if gamename == "usdp-sagard1" and existingUnit == None:
+        addUnit(country, oldloc, unit)
+        existingUnit = existingPositions.get(oldloc)
+
+    existingUnit.remove(unit)
     if existingUnit != []:
         existingPositions[oldloc] = existingUnit
     else:
@@ -36,7 +42,12 @@ def removeUnit(country, location, unit):
         existingPositions[location] = existingUnit
     else:
         existingPositions.pop(location)
-    countries[country] = existingPositions    
+    
+    if existingPositions != {}:
+        countries[country] = existingPositions
+    else:
+        countries.pop(country)
+    
 
 # write all player's units and locations
 def writeState(phase):
@@ -61,7 +72,7 @@ def writeSC(phase):
     existingSC.append(newloc)
     supplycenter[country] = existingSC"""
 
-extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA"}
+extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France", "Union":"USA", "Dutch":"Holland"}
 
 foldername = "./data_standardized/"
 gamestatefolder = "./gamestate/"
@@ -109,10 +120,24 @@ for fname in listdir(foldername):
                 lines = r[2].split("\n")
 
                 for line in lines:
-                    if line.count("CONVOY") > 0 or line.count("SUPPORT") > 0 or line.count("HOLD") > 0:
+                    #if line.count("*cut*") > 0 or line.count("*void*") > 0 or line.count("*dislodged*") > 0 or line.count("*bounce*") > 0 or line.count("*no convoy*") > 0:
+                    if re.findall("\(\*.*\*\)",line) != []:
                         continue
                     
-                    if line.count("cut") > 0 or line.count("void") > 0 or line.count("dislodged") > 0 or line.count("bounce") > 0 or line.count("no convoy") > 0:
+                    if line.count("CONVOY") > 0 or line.count("SUPPORT") > 0 or line.count("HOLD") > 0:
+                        # Just to check whether (country,unit,location) exists or not
+                        # This "if" part of code does not change anything.
+                        l = line[:-1].split()
+                        if line.count("CONVOY") > 0:
+                            index = l.index("CONVOY")
+                        elif line.count("SUPPORT") > 0:
+                            index = l.index("SUPPORT")
+                        else:
+                            index = l.index("HOLD")
+                        country = l[0][:-1]
+                        unit = l[1]
+                        location = ' '.join(l[2:index])
+                        updateUnit(country,location,location,unit)
                         continue
 
                     # record movement for an army/fleet
@@ -141,7 +166,7 @@ for fname in listdir(foldername):
                         l = line.split()
                         country = ''
                         for c in countries:
-                            if c.startswith(l[1][0:2]):
+                            if c.startswith(l[1][0:3]):
                                 country = c
                                 break
                         if country == '':
@@ -189,7 +214,7 @@ for fname in listdir(foldername):
             elif r[1].endswith("R"):
                 lines = r[2].split("\n")
                 for line in lines:
-                    if line.count("destroyed") > 0:
+                    if line.count("*destroyed*") > 0:
                         l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[1]
