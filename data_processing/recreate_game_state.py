@@ -93,9 +93,12 @@ for fname in listdir(foldername):
                 for line in lines:
                     if line.count("CONVOY") > 0 or line.count("SUPPORT") > 0 or line.count("HOLD") > 0:
                         continue
+                    
+                    if line.count("cut") > 0 or line.count("void") > 0 or line.count("dislodged") > 0 or line.count("bounce") > 0:
+                        continue
 
                     # record movement for an army/fleet
-                    if line.count("->")==1 and line.count("bounce")==0 and line.count("dislodged")==0 and line.count("SUPPORT")==0:
+                    if line.count("->") == 1:
                         l = line.split()
                         country = l[0][:-1]
                         unit = l[1]
@@ -104,7 +107,7 @@ for fname in listdir(foldername):
                         updateUnit(country, oldlocation, newlocation,unit)
                     
                     # for an army passing through the sea using a fleet
-                    if line.count("->")==2 and line.count("bounce")==0 and line.count("dislodged")==0 and line.count("SUPPORT")==0:
+                    if line.count("->") == 2:
                         l = line.split()
                         country = l[0][:-1]
                         unit = l[1]
@@ -119,32 +122,47 @@ for fname in listdir(foldername):
                 lines = r[2].split("\n")
                 for line in lines:
                     if line.count("Builds") != 0:
-                        l = line.split()
+                        l = line[:-1].split()
                         country = l[0][:-1]
                         unit = l[3].capitalize()
-                        location = (' '.join(l[5:]))[:-1]
+                        location = (' '.join(l[5:]))
                         updateUnit(country, '', location, unit)
                 writerState(r[0])
 
             # Results for Adjustment phase
-                
+            elif r[1].endswith("A"):
+                lines = r[2].split("\n")
+                for line  in lines:
+                    if line.count("Builds") != 0:
+                        l = line[:-1].split()
+                        country = l[0][:-1]
+                        unit = l[3].capitalize()
+                        location = (' '.join(l[5:]))
+                        updateUnit(country, '', location, unit)
+                    elif line.count("Removes") > 0:
+                        l = line[:-1].split()
+                        country = l[0][:-1]
+                        unit = l[3].capitalize()
+                        location = (' '.join(l[5:]))
+                        removeUnit(country, location, unit)
+            
             # Results for Retreat phase
             elif r[1].endswith("R"):
                 lines = r[2].split("\n")
                 for line in lines:
-                    if line.count("->") == 1 and line.count("destroyed") == 0:
+                    if line.count("destroyed") > 0:
+                        l = line.split()
+                        country = l[0][:-1]
+                        unit = l[1]
+                        location = ' '.join(l[2:l.index("->")])
+                        removeUnit(country, location, unit)
+                    elif line.count("->") == 1:
                         l = line.split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
                         newlocation = ' '.join(l[l.index("->")+1:])
                         updateUnit(country, oldlocation, newlocation,unit)
-                    elif line.count("destroyed") > 0:
-                        l = line.split()
-                        country = l[0][:-1]
-                        unit = l[1]
-                        location = ' '.join(l[2:l.index("->")])
-                        removeUnit(country, location, unit)
                 writeState(r[0])
 
     except UnicodeDecodeError:
