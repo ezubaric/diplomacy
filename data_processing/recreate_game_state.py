@@ -54,9 +54,10 @@ for fname in listdir(foldername):
     reader = unicodecsv.reader(open(foldername + fname,"rb"), encoding="utf8", lineterminator="\n")
     gswriter = unicodecsv.writer(open(gamestatefolder + gamename + ".gamestate", "wb"), encoding="utf8", lineterminator="\n")
     #scwriter = unicodecsv.writer(open(gamestatefolder + gamename + ".supplycenter", "wb"), encoding="utf8", lineterminator="\n")
-
+    
+    # skip header
     reader.next()
-
+    
     try:
         countries = {}
         supplycenter = {}
@@ -71,32 +72,29 @@ for fname in listdir(foldername):
                 unit = l[1]
                 location = l[2]
                 updateUnit(country, "", location, unit)
-                """
-                existingPositions = countries.get(country,{})
-                existingUnit = existingPositions.get(location,[])
-                if unit not in existingUnit:
-                    existingUnit.append(unit)
-                existingPositions[location] = existingUnit
-                countries[country] = existingPositions"""
-
                 #updateSC(country, "", location)
                 """existingSC = supplycenter.get(country,[])
                 existingSC.append(location)
                 supplycenter[country] = existingSC"""
         
+        # save initial state
         gswriter.writerow(("phase","Country","Location","Type"))
         writeState("Beginning")
         
-        scwriter.writerow(("phase","Country","Location"))
-        writeSC("Beginning")
+        #scwriter.writerow(("phase","Country","Location"))
+        #writeSC("Beginning")
 
+        # For all the steps after the initialization phase
         for r in reader:
             # Results for Movement phase
             if r[1].endswith("M"):
                 lines = r[2].split("\n")
+
                 for line in lines:
-                    # CONVOY?
-                    # not a support move
+                    if line.count("CONVOY") > 0 or line.count("SUPPORT") > 0 or line.count("HOLD") > 0:
+                        continue
+
+                    # record movement for an army/fleet
                     if line.count("->")==1 and line.count("bounce")==0 and line.count("dislodged")==0 and line.count("SUPPORT")==0:
                         l = line.split()
                         country = l[0][:-1]
@@ -104,6 +102,8 @@ for fname in listdir(foldername):
                         oldlocation = ' '.join(l[2:l.index("->")])
                         newlocation = ' '.join(l[l.index("->")+1:])
                         updateUnit(country, oldlocation, newlocation,unit)
+                    
+                    # for an army passing through the sea using a fleet
                     if line.count("->")==2 and line.count("bounce")==0 and line.count("dislodged")==0 and line.count("SUPPORT")==0:
                         l = line.split()
                         country = l[0][:-1]
@@ -112,37 +112,41 @@ for fname in listdir(foldername):
                         secondarrow = l.index("->") + l[l.index("->")+1:].index("->")
                         newlocation = ' '.join(l[secondarrow+1:])
                         updateUnit(country, oldlocation, newlocation, unit)
-                    #if army dislodged, cut or void
-                        
-                    # a support or hold move
-                    if line.count("SUPPORT")!=0 or line.count("HOLD")!=0:
-                        pass
                 writeState(r[0])
+
             # Results for Build phase
             elif r[1].endswith("B"):
                 lines = r[2].split("\n")
                 for line in lines:
-                    if line.count("Builds")!=0:
+                    if line.count("Builds") != 0:
                         l = line.split()
                         country = l[0][:-1]
                         unit = l[3].capitalize()
                         location = (' '.join(l[5:]))[:-1]
                         updateUnit(country, '', location, unit)
                 writerState(r[0])
+
             # Results for Adjustment phase
                 
             # Results for Retreat phase
             elif r[1].endswith("R"):
                 lines = r[2].split("\n")
                 for line in lines:
-                    if line.count("->") == 1 and line.count("destroyed")==0:
+                    if line.count("->") == 1 and line.count("destroyed") == 0:
                         l = line.split()
                         country = l[0][:-1]
                         unit = l[1]
                         oldlocation = ' '.join(l[2:l.index("->")])
                         newlocation = ' '.join(l[l.index("->")+1:])
                         updateUnit(country, oldlocation, newlocation,unit)
+                    elif line.count("destroyed") > 0:
+                        l = line.split()
+                        country = l[0][:-1]
+                        unit = l[1]
+                        location = ' '.join(l[2:l.index("->")])
+                        removeUnit(country, location, unit)
                 writeState(r[0])
+
     except UnicodeDecodeError:
         print gamename
         pass
