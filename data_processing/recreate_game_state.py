@@ -72,7 +72,9 @@ def writeSC(phase):
     existingSC.append(newloc)
     supplycenter[country] = existingSC"""
 
-extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France", "Union":"USA", "Dutch":"Holland"}
+extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France", "Union":"USA", "Dutch":"Holland", 
+                       "Yankee":"NewYork", "British":"B.C.", "Imperial":"HolyRomanEmpire", "Danish":"Denmark", "Carinthian":"Trieste",
+                       "Schleswiger":"Kiel", "Polish":"Warsaw"}
 
 foldername = "./data_standardized/"
 gamestatefolder = "./gamestate/"
@@ -171,7 +173,12 @@ for fname in listdir(foldername):
                                 break
                         if country == '':
                             country = extraCountryMapping[l[1]]
-                        unit = l[2].capitalize()
+                        
+                        if line.count("army") > 0:
+                            unit = "Army"
+                        else:
+                            unit = "Fleet"
+                        #unit = l[2].capitalize()
                         location = ' '.join(l[l.index("in")+1:l.index("with")])
                         if location.startswith("the "):
                             location = location[4:]
@@ -236,5 +243,5 @@ for fname in listdir(foldername):
                 writeState(r[0])
 
     except UnicodeDecodeError:
-        print gamename
+        print "~~~Unicode decode Error with", gamename
         pass
