@@ -2,6 +2,14 @@ from os import listdir
 from os.path import basename
 import unicodecsv
 
+# add player's unit
+def addUnit(country, location, unit):
+    existingPositions = countries.get(country,{})
+    existingUnit = existingPositions.get(location,[])
+    existingUnit.append(unit)
+    existingPositions[location] = existingUnit
+    countries[country] = existingPositions
+
 # update the position of a player's unit
 def updateUnit(country, oldloc, newloc, unit):
     existingPositions = countries.get(country,{})
@@ -15,6 +23,7 @@ def updateUnit(country, oldloc, newloc, unit):
     existingPositions[newloc] = existingUnit
     countries[country] = existingPositions
 
+# removes player's unit
 def removeUnit(country, location, unit):
     existingPositions = countries.get(country,{})
     existingUnit = existingPositions.get(location,[])
@@ -36,7 +45,6 @@ def writeSC(phase):
         scs = supplycenter.get(country)
         for sc in scs:
             scwriter.writerow((phase,country,sc))
-        
 
 """def updateSC(country, oldloc, newloc):
     existingSC = supplycenter.get(country,[])
@@ -57,7 +65,6 @@ for fname in listdir(foldername):
     
     # skip header
     reader.next()
-    
     try:
         countries = {}
         supplycenter = {}
@@ -67,11 +74,11 @@ for fname in listdir(foldername):
         lines = r[2].split("\n")
         for line in lines:
             if line.count("Army")!=0 or line.count("Fleet")!=0:
-                l = line.split()
+                l = line[:-1].split()
                 country = l[0][:-1]
                 unit = l[1]
                 location = l[2]
-                updateUnit(country, "", location, unit)
+                addUnit(country, location, unit)
                 #updateSC(country, "", location)
                 """existingSC = supplycenter.get(country,[])
                 existingSC.append(location)
@@ -126,7 +133,7 @@ for fname in listdir(foldername):
                         country = l[0][:-1]
                         unit = l[3].capitalize()
                         location = (' '.join(l[5:]))
-                        updateUnit(country, '', location, unit)
+                        addUnit(country, location, unit)
                 writerState(r[0])
 
             # Results for Adjustment phase
