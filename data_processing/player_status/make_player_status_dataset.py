@@ -4,13 +4,13 @@ import sys
 
 import json
 import unicodecsv
+import re
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
 
 
 extension = "press.tagged" if "--tagged" in sys.argv else "press"
-print(extension)
 
 with open(sys.argv[1], "rb") as f:
     yearly_statuses = json.load(f)
@@ -18,7 +18,9 @@ with open(sys.argv[1], "rb") as f:
 def talk_of_country_in_year(talk, country, year):
     result = []
     for msg in talk:
-        msg_year = int(msg['phase'][1:5])
+        if not msg['phase']:
+            continue
+        msg_year = int(re.findall(r"\d+", msg['phase'])[0])
         if msg_year != year:
             continue
         if msg['apparent_sender'] == country:
@@ -39,18 +41,19 @@ for game_name, statuses in yearly_statuses.items():
         talk = list(unicodecsv.DictReader(f))
 
 
-    statuses = [(int(phase[1:5]), country_statuses)
-                for phase, country_statuses in statuses.items()]
+    statuses = [(int(re.findall(r"\d+", phase)[0]), country_statuses)
+                for phase, country_statuses in statuses.items()
+                if phase]
 
     statuses = sorted(statuses)
-    for phase, country_statuses in statuses:
+    for year, country_statuses in statuses:
         for country, (supplies, armies) in country_statuses.items():
             segment = talk_of_country_in_year(
                 talk,
                 country[0],  # initial of country name
-                year=phase)
+                year=year)
             instances.append(dict(game=game_name,
-                                  year=phase,
+                                  year=year,
                                   country=country,
                                   status=np.sign(supplies - armies),
                                   talk=segment))

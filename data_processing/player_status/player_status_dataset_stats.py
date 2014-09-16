@@ -3,6 +3,8 @@ import numpy as np
 
 instances = json.load(open("player_status_dataset.json", "r"))
 
+import matplotlib
+matplotlib.use('agg')
 from matplotlib import pyplot as plt
 import seaborn as sns
 
