@@ -1,3 +1,4 @@
+""" usage: python $0 game_statuses.json path_to_presses/ [--tagged] """
 from __future__ import print_function
 import sys
 
@@ -8,7 +9,11 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 
 
-yearly_statuses = json.load(open("yearly_statuses.json"))
+extension = "press.tagged" if "--tagged" in sys.argv else "press"
+print(extension)
+
+with open(sys.argv[1], "rb") as f:
+    yearly_statuses = json.load(f)
 
 def talk_of_country_in_year(talk, country, year):
     result = []
@@ -25,7 +30,7 @@ def talk_of_country_in_year(talk, country, year):
             result.append(msg)
     return result
 
-paths = {game_name: sys.argv[1] + "/usak-{}.press".format(game_name)
+paths = {game_name: sys.argv[2] + "/{}.{}".format(game_name, extension)
          for game_name in yearly_statuses.keys()}
 
 instances = []
