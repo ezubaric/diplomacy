@@ -243,5 +243,5 @@ for fname in listdir(foldername):
                 writeState(r[0])
 
     except UnicodeDecodeError:
-        print "~~~Unicode decode Error with", gamename
+        print "~~~ Unicode decode Error in", gamename
         pass

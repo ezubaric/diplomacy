@@ -17,3 +17,7 @@ standardize_results:
 	mkdir -p data_standardized
 	python data_processing/standardize_results_usak.py
 	python data_processing/standardize_results_usdp.py
+
+gamestate:
+	mkdir -p gamestate
+	python data_processing/recreate_game_state.py
