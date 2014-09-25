@@ -13,7 +13,9 @@ import sys
 
 # get list of territory abbreviations from Jordan's file
 terr_lower = set([row['abbreviation'].split()[0]
-                  for row in csv.DictReader(open("../images/map_locations.csv"))])
+                  for row in
+                  csv.DictReader(open(sys.argv[2])))
+# should point to "/local/diplomacy/code/diplomacy/images/map_locations.csv"
 
 # generate uppercase and titlecase variants: aaa -> (aaa, AAA, Aaa)
 territory = list(terr_lower) + [t.upper() for t in terr_lower] + \
@@ -44,22 +46,23 @@ order_re = re.compile(r"""(
 
 # Count messages
 
-n_with_order, n_with_supp = 0, 0
-for f in glob(sys.argv[1] + "/*"):
-    rdr = unicodecsv.reader(open(f))
-    rdr.next()  # discard header
-    for _, _, fro, to, mile, _, msg in rdr:
-        if fro not in ("M", "unknown") and to != "M" and not mile.endswith("X"):
-            has_match = False
-            has_supp = False
-            for line in msg.split("\n"):
-                for match, supp in re.findall(order_re, line):
-                    has_match = True
-                    if supp:
-                        has_supp = True
-                    #print(match, "\t|\t", line)
-            n_with_order += has_match
-            n_with_supp += has_supp
+if __name__ == '__main__':
+    n_with_order, n_with_supp = 0, 0
+    for f in glob(sys.argv[1] + "/*"):
+        rdr = unicodecsv.reader(open(f))
+        rdr.next()  # discard header
+        for _, _, fro, to, mile, _, msg in rdr:
+            if fro not in ("M", "unknown") and to != "M" and not mile.endswith("X"):
+                has_match = False
+                has_supp = False
+                for line in msg.split("\n"):
+                    for match, supp in re.findall(order_re, line):
+                        has_match = True
+                        if supp:
+                            has_supp = True
+                        #print(match, "\t|\t", line)
+                n_with_order += has_match
+                n_with_supp += has_supp
 
-print("Presses with human written orders: ", n_with_order)
-print("Presses with support orders (subset): ", n_with_supp)
+    print("Presses with human written orders: ", n_with_order)
+    print("Presses with support orders (subset): ", n_with_supp)

@@ -2,10 +2,13 @@ from __future__ import print_function
 from collections import Counter
 import numpy as np
 
+from ..extract_human_orders import order_re
+
 from sklearn.utils import shuffle
 
 def _clean_message(msg):
     """Clean up a message"""
+    msg = order_re.sub("#MOVE", msg)
     return "\n".join(line for line in msg.split("\n")
                      if not line.startswith(">"))
 
@@ -78,3 +81,9 @@ u'usdp-owls_245']
     y_test = np.array([p['status'] for p in test_statuses])
 
     return train_statuses, y_train, test_statuses, y_test
+
+if __name__ == '__main__':
+    import json
+    player_statuses = json.load(open(sys.argv[1]))
+    # should be "/local/diplomacy/code/diplomacy/data_processing/player_status/player_status_dataset.json"
+    player_status_train_test(player_statuses)
