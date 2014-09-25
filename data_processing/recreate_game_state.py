@@ -1,5 +1,5 @@
-from os import listdir
-from os.path import basename
+import glob
+from os.path import basename, splitext
 import unicodecsv
 import re
 
@@ -79,11 +79,13 @@ extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France
 foldername = "./data_standardized/"
 gamestatefolder = "./gamestate/"
 
-for fname in listdir(foldername):
+# VN: changing listdir to glob, since there may be other files than .results
+for fname in glob.glob(foldername + "*.results"):
     gamename = basename(fname)
-    gamename = gamename[:-len(".results")]
+    gamename, _ = splitext(gamename)  # splitext is more robust
+    # gamename = gamename[:-len(".results")]
     print "Processing ", gamename
-    reader = unicodecsv.reader(open(foldername + fname,"rb"), encoding="utf8", lineterminator="\n")
+    reader = unicodecsv.reader(open(fname, "rb"), encoding="utf8", lineterminator="\n")
     gswriter = unicodecsv.writer(open(gamestatefolder + gamename + ".gamestate", "wb"), encoding="utf8", lineterminator="\n")
     #scwriter = unicodecsv.writer(open(gamestatefolder + gamename + ".supplycenter", "wb"), encoding="utf8", lineterminator="\n")
     
