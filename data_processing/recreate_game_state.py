@@ -245,3 +245,5 @@ for fname in listdir(foldername):
     except UnicodeDecodeError:
         print "~~~ Unicode decode Error in", gamename
         pass
+    except Exception as e:
+        print "~~~ Exception in ", gamename, ": ", str(e)
