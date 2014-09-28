@@ -56,13 +56,14 @@ def parse_move(order, assumed_country):
     return country, unit_type, start, stop
 
 
-def movement_tuples(message, row):
+def movement_tuples(message, row, escaped=True):
     row["support_start"] = ""
     row["convoy_start"] = ""
     row["convoy_end"] = ""
     row["support_end"] = ""
 
-    for line in message.split("\\n"):
+    linebreak = "\\n" if escaped else "\n"
+    for line in message.split(linebreak):
         # print("Processing: %s" % line)
         if line.strip().startswith("Ownership of supply centers:"):
             break
