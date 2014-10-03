@@ -13,14 +13,20 @@
 
 \begin{document}
 
+\begin{center}
+{\bf Predicting Betrayal in Online Games}
+\noindent\rule{2cm}{0.4pt}
+\end{center}
+
 The prisoner's dilemma is elegant in its simplicity: two
 prisoners---denied communication---must decide whether to cooperate
 with each other or defect.  This foundational thought experiment of
 game theory has helped understand many real world scenarios: \dots .
 Despite its power, the prisoner's dilemma is woefully unrealistic.
 Cooperation and betrayal do not happen in a cell cut off from the rest
-of the world.  Instead, it is mediated by communication: promises are
-made, then broken, and met with recriminations.
+of the world.  Instead, real interactions are mediated by
+communication: promises are made, then broken, and met with
+recriminations.
 
 We propose to study the role of \emph{language} in understanding
 betrayal and cooperation in the game of {\bf Diplomacy}.  Diplomacy,
@@ -54,7 +60,7 @@ probabilistic model to explain and predict the actions of players.
 Diplomacy begins in 1914 with players casting themselves as the
 European powers at the eve of the first world war: England, Germany,
 France, Russia, Austria, Italy, and the Ottoman Empire.  The goal of
-the game (like other wargames such as Risk or Axis \& Allies) is to
+the game (like other war games such as Risk or Axis \& Allies) is to
 capture all of the territories on the game board
 (Figure~\ref{fig:board}).  The game consists of two
 phases: \emph{diplomacy} and \emph{orders}.
@@ -63,7 +69,7 @@ phases: \emph{diplomacy} and \emph{orders}.
 \label{sec:mechanics}
 
 We begin with the order phase, which is more conventional.  In the
-order phase, each of the players write down their orders for their
+order phase, each of the players writes down their orders for their
 units (e.g., a unit can move to an adjacent square if it unoccupied).
 A player writes down all of the orders they want to execute.  For
 example, Germany may make the following moves:
@@ -74,10 +80,10 @@ example, Germany may make the following moves:
 \end{itemize*}
 
 The orders for all users are resolved through a set of rules that are
-beyond our scope.  The important elements of the game mechanics are:
-moves happen simulteneously, there is no randomness, and ties favor
-defenders.  To dislodge an opposing force, an attacker must have
-numerical superiority.
+beyond the scope of this document.  The important elements of the game
+mechanics are: moves happen simultaneously, there is no randomness,
+and ties favor defenders.  To dislodge an opposing force, an attacker
+must have numerical superiority.
 
 This is accomplished through units supporting each other.  An adjacent
 stationary movement can, in lieu of itself moving, can support the
@@ -91,17 +97,21 @@ supporting unit or supporting the attack).
 
 The nuances of support are important to players, but not particularly
 relevant for understanding how people cooperate and compete with each
-other.  The key idea is that sucessful moves need support, and it's
+other.  The key idea is that successful moves need support, and it's
 often impossible for a player to act on their own.  They need to get
-other players to help them accomplish their goals.  This requires
-cooperation and \emph{diplomacy}, which brings us to the second phase
-of the game.
+other players to help them accomplish their goals.  Because these
+orders are machine readable, we have a clear indication of when
+players are working together (supporting each other) or working
+against each other (attacking each other); we will use this to define
+a cooperation matrix in Section~\ref{sec:model}.  However,
+coordinating these actions between players requires cooperation and
+\emph{diplomacy}, which brings us to the second phase of the game.
 
 \subsection{Communication}
 
 In the \emph{diplomacy} phase of the game, players can talk to each
-other.  These conversations can either happen globally or (more
-typically) one-on-one.  Conversations include greetings, extra-game
+other.  These conversations can either happen globally or---more
+typically---one-on-one.  Conversations include greetings, extra-game
 discussions (e.g., ``did you see Game of Thrones?''), low-level
 strategy (``if you attack Armenia, I'll support you''), high-level
 strategy (``we need to capture central Europe'').
@@ -126,8 +136,8 @@ Diplomacy data.
 \section{Preliminary Analysis}
 
 We obtained several hundred complete games of Diplomacy from a two
-major online clearinghouses for games.  This includes not just the
-state of the games but the annonymous communications between players
+major online clearing houses for games.  This includes not just the
+state of the games but the anonymous communications between players
 (all player identities are unknown to both us and their fellow
 players).
 
@@ -194,7 +204,7 @@ this figure is that there are no odd parities; if a player has
 betrayed you once, they never ``stay true'' to the end of the game.
 
 Thus, a challenge for players and also for us as researchers is to
-predict when payback will happen.  Can we predict when one player will
+predict when pay-back will happen.  Can we predict when one player will
 ``stab'' (in the lingo of Diplomacy) another?
 
 \begin{figure}[tbh]
@@ -213,6 +223,7 @@ predict when payback will happen.  Can we predict when one player will
 \end{figure*}
 
 \section{Proposed Model for Understanding Betrayal and Cooperation}
+\label{sec:model}
 
 We propose a novel graphical model to capture the evolution of games
 and to predict what players will do.  This model combines supervised
@@ -249,12 +260,23 @@ between the topics in two player's interactions.
 
 Adding additional features can further improve prediction: adding
 word-level and temporal features can help predict whether players will
-be friend or foe.
+be friend or foe.  Thus, in addition to the topics that a player uses
+in a turn, we can also add features that represent specific words,
+aspects of the map, etc.
 
 \paragraph{Temporal Modeling}
 
 Finally, adding temporal models can help capture the evolution of
 players' communication patterns by adding the additional constraint
-that topics shouldn't change radically over time.
+that topics shouldn't change radically over time.  Thus, we can add a
+switch variable $\tau_p^{(t+1)}$ that indicates whether a distribution
+over topics has changed from time $t$ when player $p$ has a new topic
+distribution for a player $\theta_p^{(t)}$.
+
+We have previously used these models to indicate when people change
+what they're talking about.  Because of the joint dependence also on
+the relationships $y_{ij}$, we also hope that these segments will
+capture the subtle shifts in language the can help predict when
+players choose to betray each other.
 
 \end{document}
