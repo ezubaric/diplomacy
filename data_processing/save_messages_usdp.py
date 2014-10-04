@@ -15,14 +15,13 @@ def _country_code(country):
     elif country == 'All':
         return 'all'
     else:
-        return country[0]
-
+        return country
 
 def _process_sig(signature):
     sender, recipients = signature.split(None, 1)
     recipients = recipients.split()
     sender = _country_code(sender)
-    recipients = "".join([_country_code(r) for r in recipients])
+    recipients = "+".join([_country_code(r) for r in recipients])
     return sender, recipients
 
 phase_re = ur'[SFWAPOÞB]\d{1,4}[MRBA]X?'

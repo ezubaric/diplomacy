@@ -58,14 +58,14 @@ def writeState(phase):
             for u in units:
                 gswriter.writerow((phase,country,u,location))
 
-# write all player's supply centers
+"""# write all player's supply centers
 def writeSC(phase):
     for country in supplycenter:
         scs = supplycenter.get(country)
         for sc in scs:
             scwriter.writerow((phase,country,sc))
 
-"""def updateSC(country, oldloc, newloc):
+def updateSC(country, oldloc, newloc):
     existingSC = supplycenter.get(country,[])
     if oldloc!="":
         existingSC.pop(oldloc)
@@ -79,11 +79,9 @@ extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France
 foldername = "./data_standardized/"
 gamestatefolder = "./gamestate/"
 
-# VN: changing listdir to glob, since there may be other files than .results
 for fname in glob.glob(foldername + "*.results"):
     gamename = basename(fname)
     gamename, _ = splitext(gamename)  # splitext is more robust
-    # gamename = gamename[:-len(".results")]
     print "Processing ", gamename
     reader = unicodecsv.reader(open(fname, "rb"), encoding="utf8", lineterminator="\n")
     gswriter = unicodecsv.writer(open(gamestatefolder + gamename + ".gamestate", "wb"), encoding="utf8", lineterminator="\n")

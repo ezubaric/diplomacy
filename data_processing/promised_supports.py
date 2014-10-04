@@ -22,6 +22,8 @@ full_country = {country[0]: country for country in kCOUNTRIES}
 promised_supports = []
 
 for f in glob(sys.argv[1] + "/*"):
+    if not f.endswith(".press"):
+        continue
     rdr = unicodecsv.reader(open(f))
     rdr.next()  # discard header
     for _, _, fro, to, mile, _, msg in rdr:
