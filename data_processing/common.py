@@ -25,9 +25,9 @@ def get_location_aliases():
             l = f.readline().strip()
             continue
         loc, loc_alias = l.split("=")
-        loc_alias = [x.strip() for x in loc_alias.split()]
+        loc_alias = [x.strip().replace("+"," ") for x in loc_alias.split()]
         all_alias[loc.strip()] = loc_alias
-        all_locations.append(loc[0].strip())
+        all_locations.append(loc.strip())
         all_locations.extend(loc_alias)
         l = f.readline().strip()
     return all_alias, all_locations

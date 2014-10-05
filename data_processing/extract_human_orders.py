@@ -11,15 +11,19 @@ import csv
 import unicodecsv
 import sys
 
+from common import get_location_aliases
+
 # get list of territory abbreviations from Jordan's file
-terr_lower = set([row['abbreviation'].split()[0]
+alias, terr_lower = get_location_aliases()
+#terr_lower = set(terr_lower)
+'''terr_lower = set([row['abbreviation'].split()[0]
                   for row in
-                  csv.DictReader(open(sys.argv[2])))
+                  csv.DictReader(open(sys.argv[2])))'''
 # should point to "/local/diplomacy/code/diplomacy/images/map_locations.csv"
 
 # generate uppercase and titlecase variants: aaa -> (aaa, AAA, Aaa)
-territory = list(terr_lower) + [t.upper() for t in terr_lower] + \
-        [t[0].upper() + t[1:] for t in terr_lower]
+territory = terr_lower + [t.upper() for t in terr_lower] + \
+        [t.capitalize() for t in terr_lower]
 
 # turn into or-regex plus optional "sc" (I don't know what it means)
 territory = r"(?:{})(?:\s*\((?:sc|Sc|SC)\))?".format("|".join(territory))
