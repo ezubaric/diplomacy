@@ -15,6 +15,23 @@ kADJECTIVES = {"English":"England",
 kVARIANT = re.compile("Variant: [a-zA-Z0-9 ]*")
 kGOODVARS = ["Standard", "Standard Gunboat"]
 
+def get_location_aliases():
+    f = open("./data_processing/dpjudge_data/location_alias.txt", "r")
+    all_alias = {}
+    all_locations = []
+    l = f.readline().strip()
+    while l!= '':
+        if l[0] == "#":
+            l = f.readline().strip()
+            continue
+        loc, loc_alias = l.split("=")
+        loc_alias = [x.strip() for x in loc_alias.split()]
+        all_alias[loc.strip()] = loc_alias
+        all_locations.append(loc[0].strip())
+        all_locations.extend(loc_alias)
+        l = f.readline().strip()
+    return all_alias, all_locations
+
 def all_gamenames(cursor):
     """Returns a list of all distinct game names"""
     for name, in cursor.execute( 'SELECT DISTINCT gamename FROM messages'):

@@ -33,6 +33,8 @@ if __name__ == "__main__":
         game_name = basename(fname)
         if game_name.endswith(".press"):
             game_name = game_name[:-len(".press")]
+        else:
+            continue
         with open(fname, "rU") as f:
             contents = f.read()
         presses = re.split(u":: ({}|\?\?\?\?\?)".format(phase_re), contents)[1:]

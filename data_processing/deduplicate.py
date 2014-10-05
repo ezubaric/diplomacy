@@ -11,6 +11,8 @@ except ImportError:
 
 
 for f in tqdm(glob("{}/*".format(sys.argv[1]))):
+    if not f.endswith(".press"):
+        continue
     rdr = unicodecsv.reader(open(f))
     presses = []
     header = rdr.next()
