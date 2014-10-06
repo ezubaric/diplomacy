@@ -323,3 +323,14 @@ def generate_game_broadcast_presses(cursor, game_name):
                 sender = "Re-unknown"
 
         yield sender, receivers, milestone, sent, msg
+
+
+def getGameState(gamename, phase):
+    countries = {}
+    fname = foldername + gamename + ".gamestate"
+    reader = unicodecsv.reader(open(fname, "rb"), encoding="utf8", lineterminator="\n")
+    r = reader.next()
+    for r in reader:
+        if r[0] == phase:
+            addUnit(r[1], r[3], r[2])
+    return countries

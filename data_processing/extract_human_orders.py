@@ -44,7 +44,7 @@ order_re = re.compile(r"""(
        (?:\s*-\s*|  # move denoted by dash
           \s+to\s+| # move denoted by " to "
           \s+m\s+|  # move denoted by " m "
-          \s+([sS](?:upport)?)\s+(?:[afAF]\s+)?)  # support order
+          \s+([sS](?:upport)?)\s+(?:(a|army|f|fleet|A|Army|F|Fleet)\s+)?)  # support order
           {0:}(?:\s*-\s*{0:})?)
 )""".format(territory), re.VERBOSE)
 
