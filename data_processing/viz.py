@@ -46,7 +46,6 @@ def attacks_on_home(orders):
             victim = terr_owned[dest]
             if victim != country:
                 attacks.append((country, victim))
-    print(" ".join(sorted(list(set(terr_owned)))))
     return attacks
 
 
@@ -69,8 +68,6 @@ def attacks_with_hold(orders):
         if terr in territories_moved_to:
             attacks.extend(((attacking_country, territories_held[terr])
                             for attacking_country in territories_moved_to[terr]))
-    print(" ".join(sorted(list(set(territories_held)))))
-    print(" ".join(sorted(list(set(territories_moved_to)))))
     return attacks
 
 
@@ -85,14 +82,10 @@ def attacks_with_support(orders):
         if " " in dest:  # not sure about this
             dest, _ = dest.split(" ", 1)
         if move['order_type'] == 'hold':
-            if dest[-1] == ".":
-                print(move)
             territories_held[dest] = country
         elif move['order_type'] == 'support':
             supp_start = move['support_start']
             supp_end = move['support_end']
-            if supp_end[-1] == ".":
-                print(move)
             supp_country = move['help_country'][0]
             if supp_start != supp_end and supp_country != country:
                 territories_supported_into[supp_end].append(country)

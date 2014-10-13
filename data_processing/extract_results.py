@@ -4,6 +4,7 @@ import sys
 # from unidecode import unidecode  # pyflakes reports unused
 import csv
 from dateutil import parser
+import warnings
 from common import kCOUNTRIES, kADJECTIVES, kGOODVARS, game_to_variant
 
 kMOVEMENT = re.compile("Movement results")
@@ -36,7 +37,7 @@ def parse_move(order, assumed_country):
     order = order.strip()
     assert order.startswith("Fleet") or order.startswith("Army"), \
       "Bad start of order: %s" % order
-    unit_type, order = order.split(" ", 1)
+    unit_type, order = order.split(" ", 1)  # gets rid of Fleet/Army
 
     if " -> " in order:
         locations = order.split(" -> ")
@@ -44,11 +45,15 @@ def parse_move(order, assumed_country):
         start = locations[0]
         stop = locations[-1].replace(".", "")
     else:
+
         if order.startswith("Army") or order.startswith("Fleet"):
+            # this should never happen
+            print("This should never happen!")
+            assert False
             unit_type, order = order.split(" ", 1)
 
         if "hold" in order.lower():
-            start, hold = order.split(" ", 1)
+            start, hold = order.rsplit(" ", 1)
         else:
             start = order.strip()
         stop = start
@@ -78,7 +83,10 @@ def movement_tuples(message, row, escaped=True):
 
             if "(*" in order:
                 order, result = order.split("(*")
-                row["result"] = result.replace("*)", "")
+                result = result.replace("*)", "")
+                if result == 'invalid':
+                    continue
+                row["result"] = result
             else:
                 row["result"] = ""
 
@@ -87,13 +95,22 @@ def movement_tuples(message, row, escaped=True):
                 unit, order = order.split(" SUPPORT ", 1)
                 unit = unit.strip()
 
-                assert unit.startswith("Fleet") or unit.startswith("Army"), "Bad start of order: %s" % order
+                if not unit.startswith("Fleet") and not unit.startswith("Army"):
+                    warnings.warn("Bad start of order: {}".format(unit))
+                    continue
+
                 unit_type, location = unit.split(" ", 1)
                 row["unit_type"] = unit_type
                 row["start_location"] = location
                 row["end_location"] = location
-                sup_country, sup_type, sup_start, sup_end = \
-                  parse_move(order, country)
+                try:
+                    sup_country, sup_type, sup_start, sup_end = \
+                        parse_move(order, country)
+                except AssertionError as e:
+                    warnings.warn("Assertion failed: {} in line {}".format(
+                        str(e), line))
+                    continue
+
                 row["help_country"] = sup_country
                 row["help_type"] = sup_type
                 row["support_start"] = sup_start.replace(".", "").strip()
@@ -103,13 +120,20 @@ def movement_tuples(message, row, escaped=True):
                 unit, order = order.split(" CONVOY ", 1)
                 unit = unit.strip()
 
-                assert unit.startswith("Fleet") or unit.startswith("Army"), "Bad start of order: %s" % order
+                if not unit.startswith("Fleet") and not unit.startswith("Army"):
+                    warnings.warn("Bad start of order: {}".format(unit))
+                    continue
                 unit_type, location = unit.split(" ", 1)
                 row["unit_type"] = unit_type
                 row["start_location"] = location
                 row["end_location"] = location
 
-                transport_country, unit_type, start, end = parse_move(order, country)
+                try:
+                    transport_country, unit_type, start, end = \
+                        parse_move(order, country)
+                except AssertionError as e:
+                    warnings.warn("Assertion failed: " + str(e))
+                    continue
                 row["convoy_start"] = start
                 row["convoy_end"] = end
                 row["help_type"] = unit_type
@@ -119,7 +143,12 @@ def movement_tuples(message, row, escaped=True):
                     row["order_type"] = "move"
                 else:
                     row["order_type"] = "hold"
-                move_country, unit_type, start, end = parse_move(order, country)
+                try:
+                    move_country, unit_type, start, end = \
+                        parse_move(order, country)
+                except AssertionError as e:
+                    warnings.warn("Assertion failed: " + str(e))
+                    continue
                 row["unit_type"] = unit_type
                 row["start_location"] = start
                 row["end_location"] = end
