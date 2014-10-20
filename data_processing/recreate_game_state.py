@@ -8,23 +8,23 @@ from os.path import basename, splitext
 import unicodecsv
 import re
 
+foldername = "./data_standardized/"
+gamestatefolder = foldername
+
 # retrieve the saved game state in file
 def getGameState(gamename, phase):
-    try:
-        countries = {}
-        fname = "./gamestate/" + gamename + ".gamestate"
-        reader = unicodecsv.reader(open(fname, "rb"), encoding="utf8", lineterminator="\n")
-        r = reader.next()
-        for r in reader:
-            if r[0] == phase:
-                existingPositions = countries.get(r[1],{})
-                existingUnit = existingPositions.get(r[3],[])
-                existingUnit.append(r[2])
-                existingPositions[r[3]] = existingUnit
-                countries[r[1]] = existingPositions
-        return countries
-    except:
-        return {}
+    countries = {}
+    fname = gamestatefolder + gamename + ".gamestate"
+    reader = unicodecsv.reader(open(fname, "rb"), encoding="utf8", lineterminator="\n")
+    r = reader.next()
+    for r in reader:
+        if r[0] == phase:
+            existingPositions = countries.get(r[1],{})
+            existingUnit = existingPositions.get(r[3],[])
+            existingUnit.append(r[2])
+            existingPositions[r[3]] = existingUnit
+            countries[r[1]] = existingPositions
+    return countries
 
 # add player's unit
 def addUnit(country, location, unit):
@@ -32,7 +32,7 @@ def addUnit(country, location, unit):
     existingUnit = existingPositions.get(location,[])
     existingUnit.append(unit)
     existingPositions[location] = existingUnit
-    countries[country] = existingPositions
+    countries[country] = existingPositionsw
 
 # update the position of a player's unit
 def updateUnit(country, oldloc, newloc, unit):
@@ -98,8 +98,6 @@ extraCountryMapping = {"Ottoman":"Turkey", "Confederate":"CSA", "French":"France
                        "Yankee":"NewYork", "British":"B.C.", "Imperial":"HolyRomanEmpire", "Danish":"Denmark", "Carinthian":"Trieste",
                        "Schleswiger":"Kiel", "Polish":"Warsaw"}
 
-foldername = "./data_standardized/"
-gamestatefolder = foldername
 
 if __name__ == "__main__":
     for fname in glob.glob(foldername + "*.results"):
