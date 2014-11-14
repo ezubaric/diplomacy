@@ -249,16 +249,18 @@ def status_flip_dataset(game, **flips_kwargs):
     dataset = []
     seqs = dyad_seqs(game)
     flips = status_flips(seqs, **flips_kwargs)
-    press = [pr for _, _, _, _, pr, _ in iter_game(game)]
+    press = [((year, season), pr) for year, season, _, _, pr, _
+             in iter_game(game)]
     for (country_a, country_b), runs in flips.items():
         for run in runs:
             idx_start, idx_end = run[0][0], run[-1][0]
-            run_press = [[msg
+            run_press = [((year, season), [msg
                         for msg in phase_press
                         if (msg['apparent_sender'],
                             msg['apparent_receivers']) in (
-                            (country_a, country_b), (country_b, country_a))]
-                        for phase_press in press[idx_start:idx_end + 1]]
+                            (country_a, country_b), (country_b, country_a))])
+                        for (year, season), phase_press
+                        in press[idx_start:idx_end + 1]]
             dataset.append((country_a, country_b, run_press, run))
     return dataset
 
